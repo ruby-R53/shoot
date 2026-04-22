@@ -1,17 +1,18 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include "shoot.h"
+
+void bombstatus(int bombs);
 
 int main() {
 	initscr();
 
-	int ymax = 0;
-	int xmax = 0;
+	int ymax = getmaxy(stdscr);
+	int xmax = getmaxx(stdscr);
 
-	getmaxyx(stdscr, ymax, xmax);
-
-	if (ymax < 52 || xmax < 85) {
+	if (ymax < 53 || xmax < 85) {
 		endwin();
-		printf("Your terminal isn't at least 85x52 characters!\n");
+		printf("Your terminal isn't at least 85x53 characters!\n");
 		printf("Please try resizing your window and try again.\n");
 		exit(1);
 	}
@@ -21,19 +22,19 @@ int main() {
 	curs_set(0);
 	raw();
 
-	int bombs = 3;
-
-	hud = create_win(3, 20, (ymax+52)/2, (xmax-20)/2, false);
-	wprintw(hud, "Available Bombs: %d", bombs);
-	wrefresh(hud);
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true);
+	hud  = create_win(3, 20, (ymax+52)/2, (xmax-20)/2, false);
 
 	keypad(game, TRUE);
 
 	WINDOW* player_w = genspr(player);
 	WINDOW* enemy_w  = genspr(enemy);
 
+	int bombs = 3;
+	bombstatus(bombs);
+
 	int key = 0;
+	bool kill = true;
 	while ((key = wgetch(game)) != 'q') {
 		switch(key) {
 			case KEY_UP:
@@ -57,10 +58,14 @@ int main() {
 				break;
 
 			case 'z':
-				bool kill = shoot(enemy_w, player, enemy);
-				if (kill == true) {
+				if (player.y > 2) kill = shoot(enemy_w, player, enemy);
+				if (kill) {
+					werase(hud);
 					wprintw(hud, "\rKilled!");
 					wrefresh(hud);
+					usleep(250000);
+					kill = false;
+					bombstatus(bombs);
 				}
 				break;
 
@@ -75,6 +80,12 @@ int main() {
 		}
 	}
 
+	delwin(hud);
 	endwin();
 	return 0;
+}
+
+void bombstatus(int bombs) {
+	wprintw(hud, "\rAvailable Bombs: %d", bombs);
+	wrefresh(hud);
 }

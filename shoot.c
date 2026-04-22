@@ -23,7 +23,7 @@ SPRITE enemy = {
 	.skin = "-=v=-",
 	.h = 1,
 	.w = 5,
-	.y = 1,
+	.y = 5,
 	.x = 75/2
 };
 
@@ -48,7 +48,6 @@ WINDOW* genspr(SPRITE chr) {
 void movespr(WINDOW* spr, const char* skin, int y, int x) {
 	werase(spr);
 	touchwin(game);
-	wnoutrefresh(spr);
 	mvderwin(spr, y, x);
 
 	wprintw(spr, "%s", skin);
@@ -57,24 +56,34 @@ void movespr(WINDOW* spr, const char* skin, int y, int x) {
 }
 
 bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
-	bullet.y = player.y-1;
-	bullet.x = player.x+2;
+	bullet.y = player.y - 1;
+	bullet.x = player.x + 2;
 	WINDOW* bullet_w = genspr(bullet);
-	for (; bullet.y >= enemy.y; --bullet.y) {
+
+	for (; bullet.y >= 1; --bullet.y) {
 		wmove(game, bullet.y, bullet.x);
 		movespr(bullet_w, bullet.skin, bullet.y, bullet.x);
 		wrefresh(game);
+
+		if (bullet.y == enemy.y &&
+			bullet.x == (enemy.x+2)) {
+			collide(tgt);
+			tgt = NULL;
+			goto cleanup;
+		}
+
 		usleep(5000);
 	}
 
+cleanup:
 	werase(bullet_w);
 	wrefresh(bullet_w);
 	delwin(bullet_w);
 
-	if (bullet.y == enemy.y && bullet.x == enemy.x) {
-		collide(tgt);
+	if (bullet.y == enemy.y &&
+		bullet.x == (enemy.x+2))
 		return true;
-	} else
+	else
 		return false;
 }
 
@@ -98,7 +107,9 @@ void boom(WINDOW* spr, SPRITE chr) {
 }
 
 void collide(WINDOW* tgt) {
-	werase(tgt);
-	wrefresh(tgt);
-	delwin(tgt);
+	if (tgt != NULL) {
+		werase(tgt);
+		wrefresh(tgt);
+		delwin(tgt);
+	}
 }
