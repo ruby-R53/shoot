@@ -67,8 +67,7 @@ bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
 
 		if (bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
-			collide(tgt);
-			tgt = NULL;
+			if (collide(tgt)) tgt = NULL;
 			goto cleanup;
 		}
 
@@ -80,11 +79,7 @@ cleanup:
 	wrefresh(bullet_w);
 	delwin(bullet_w);
 
-	if (bullet.y == enemy.y &&
-		bullet.x == (enemy.x+2))
-		return true;
-	else
-		return false;
+	return collide(tgt);
 }
 
 void boom(WINDOW* spr, SPRITE chr) {
@@ -106,10 +101,12 @@ void boom(WINDOW* spr, SPRITE chr) {
 	movespr(spr, chr.skin, chr.y, chr.x);
 }
 
-void collide(WINDOW* tgt) {
+bool collide(WINDOW* tgt) {
 	if (tgt != NULL) {
 		werase(tgt);
 		wrefresh(tgt);
 		delwin(tgt);
-	}
+		return true;
+	} else
+		return false;
 }
