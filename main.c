@@ -65,6 +65,7 @@ int main() {
 					wrefresh(hud);
 					usleep(250000);
 					kill = false;
+					enemy_w = NULL;
 					bombstatus(bombs);
 				}
 				break;

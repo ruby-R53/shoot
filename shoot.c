@@ -58,6 +58,7 @@ void movespr(WINDOW* spr, const char* skin, int y, int x) {
 bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
 	bullet.y = player.y - 1;
 	bullet.x = player.x + 2;
+	bool killed = false;
 	WINDOW* bullet_w = genspr(bullet);
 
 	for (; bullet.y >= 1; --bullet.y) {
@@ -65,9 +66,11 @@ bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
 		movespr(bullet_w, bullet.skin, bullet.y, bullet.x);
 		wrefresh(game);
 
-		if (bullet.y == enemy.y &&
+		if (tgt != NULL &&
+			bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
-			if (collide(tgt)) tgt = NULL;
+			collide(tgt);
+			killed = true;
 			goto cleanup;
 		}
 
@@ -79,7 +82,7 @@ cleanup:
 	wrefresh(bullet_w);
 	delwin(bullet_w);
 
-	return collide(tgt);
+	return killed;
 }
 
 void boom(WINDOW* spr, SPRITE chr) {
@@ -101,12 +104,8 @@ void boom(WINDOW* spr, SPRITE chr) {
 	movespr(spr, chr.skin, chr.y, chr.x);
 }
 
-bool collide(WINDOW* tgt) {
-	if (tgt != NULL) {
-		werase(tgt);
-		wrefresh(tgt);
-		delwin(tgt);
-		return true;
-	} else
-		return false;
+void collide(WINDOW* tgt) {
+	werase(tgt);
+	wrefresh(tgt);
+	delwin(tgt);
 }
