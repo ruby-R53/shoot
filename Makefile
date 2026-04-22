@@ -4,5 +4,4 @@ ifdef DBG
 endif
 
 all:
-	gcc $(FLAGS) shoot.c main.c
-
+	gcc $(FLAGS) shoot.c main.c -o shoot
