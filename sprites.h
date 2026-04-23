@@ -4,6 +4,7 @@
 typedef struct SPRITE {
 	int y, x; // starting position
 	int h, w; // height, width
+	int hp; // health
 	const char* skin; // and how it looks like
 	WINDOW* win; // and where it's from
 } SPRITE;

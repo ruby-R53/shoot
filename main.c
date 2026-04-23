@@ -29,8 +29,9 @@ int main(void) {
 
 	// finally, render where the
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
-	hud  = create_win(1, 20, (ymax+52)/2, (xmax-20)/2, false);
-	// ^ and its HUD, just a little (2 rows) below it
+	hud.top    = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
+	hud.bottom = create_win(2, 20, (ymax+50)/2, (xmax-20)/2, false);
+	// ^ and its HUDs
 
 	keypad(game, TRUE); // support for arrow keys
 
@@ -38,11 +39,13 @@ int main(void) {
 	player.win = genspr(player); // player
 	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
 
+	health(player, hud.bottom);
+	health(enemy, hud.top);
+
 	int bombs = 3; // this clears EVERYTHING on the screen so use it as a last resort
 	bombstatus(bombs); // show that to the user
 
 	int key = 0; // this is what's gonna carry what getch() gets
-	bool kill = false; // we haven't killed anyone just yet
 	
 	// now, the main loop
 	while ((key = wgetch(game)) != 'q') { // 'q' exits the game!
@@ -75,24 +78,17 @@ int main(void) {
 				if (player.y > 2) // but why would you shoot the wall brah
 					// this function not only shoots but also kills, so
 					// feed what it returns to the kill tracker
-					kill = shoot(player, enemy);
+					enemy.hp = shoot(player, enemy);
 
-				if (kill) { // if we killed the opponent···
-					werase(hud);
-					wprintw(hud, "\rKilled!"); // show it on the HUD
-					wrefresh(hud);
-					usleep(250000); // for .25 seconds
-					kill = false;
+				if (enemy.hp == 0 && enemy.win != NULL) { // if we killed the opponent···
 					enemy.win = NULL; // tell shoot() our enemy is dead
-					bombstatus(bombs); // and go back to the previous state
 				} // if not, try again!
 				break;
 
 			case 'x': // 'x' for bombing!
 				if (bombs > 0) {
 					--bombs;
-					wprintw(hud, "\rAvailable Bombs: %d", bombs);
-					wrefresh(hud);
+					bombstatus(bombs);
 					boom(player);
 					// these arguments must be passed so that after the screen gets
 					// cleared, the player's sprite can be redrawn
@@ -101,12 +97,13 @@ int main(void) {
 		}
 	}
 
-	delwin(hud); // FIXME
+	delwin(hud.top); // FIXME
+	delwin(hud.bottom);
 	endwin();
 	return 0;
 }
 
 void bombstatus(int bombs) { // bomb tracker updater
-	wprintw(hud, "\rAvailable Bombs: %d", bombs);
-	wrefresh(hud);
+	mvwprintw(hud.bottom, 1, 0, "Available Bombs: %d", bombs);
+	wrefresh(hud.bottom);
 }

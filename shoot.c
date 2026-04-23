@@ -4,7 +4,7 @@
 
 // still nothing for those, for now
 WINDOW* game;
-WINDOW* hud;
+HUD hud;
 
 // create a window with
 // h height,
@@ -50,13 +50,12 @@ void movespr(SPRITE spr, int y, int x) {
 // what the game is about, we need to specify
 // whom we want to shoot, where we're coming from
 // and where the opponent is
-bool shoot(SPRITE player, SPRITE enemy) {
+int shoot(SPRITE player, SPRITE enemy) {
 	// use the player's coordinates as the base
 	bullet.y = player.y - 1;
 	bullet.x = player.x + 2;
 	// ^ FIXME there needs to be a better way to say it's
 	// the center that we want
-	bool killed = false; // we haven't killed anyone (yet!)
 	bullet.win = genspr(bullet);
 
 	// move that bullet thing up!
@@ -67,11 +66,13 @@ bool shoot(SPRITE player, SPRITE enemy) {
 
 		// if the enemy is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
-		if (enemy.win != NULL &&
+		if (enemy.hp != 0 &&
 			bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
-			collide(enemy);
-			killed = true;
+			hit(enemy);
+			--enemy.hp;
+			health(enemy, hud.top);
+			if (enemy.hp == 0) kill(enemy);
 			goto cleanup;
 			// it makes sense that it disappears after hitting
 			// something before the wall tho'
@@ -83,9 +84,9 @@ bool shoot(SPRITE player, SPRITE enemy) {
 cleanup:
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
-	delwin(bullet.win); // make curses know it disappeared!
+	delwin(bullet.win); // let curses know it disappeared!
 
-	return killed; // and that's what we feed `kill` in main()
+	return enemy.hp; // and that will be kept track of in `main()`
 }
 
 // here comes the BOMB
@@ -115,9 +116,29 @@ void boom(SPRITE spr) {
 	// ^ and restore the player's position···
 }
 
-// if the bullet hit something, let curses know
-void collide(SPRITE spr) {
+// if someone got killed, make ncurses actually kill them too
+void kill(SPRITE spr) {
 	werase(spr.win); // erase the target
 	wrefresh(spr.win);
 	delwin(spr.win); // make curses now the target is dead
+}
+
+// if we hit something, let curses know
+void hit(SPRITE spr) {
+	usleep(5000);
+	movespr(spr, spr.y, spr.x);
+	wrefresh(spr.win);
+}
+
+// health status for each sprite
+void health(SPRITE spr, WINDOW* dsp) {
+	if (spr.hp == 0) {
+		mvwprintw(dsp, 0, 0, "Killed!");
+		wrefresh(dsp);
+		usleep(125000);
+		werase(dsp);
+	} else
+		mvwprintw(dsp, 0, 0, "HP: %02d", spr.hp);
+
+	wrefresh(dsp);
 }

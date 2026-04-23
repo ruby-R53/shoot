@@ -15,7 +15,8 @@ SPRITE player = {
 	.h = 1,
 	.w = 5,
 	.y = 45,
-	.x = 75/2
+	.x = 75/2,
+	.hp = 4
 };
 
 SPRITE enemy = {
@@ -23,5 +24,6 @@ SPRITE enemy = {
 	.h = 1,
 	.w = 5,
 	.y = 5,
-	.x = 75/2
+	.x = 75/2,
+	.hp = 8
 };
