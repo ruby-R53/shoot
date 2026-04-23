@@ -1,18 +1,11 @@
 #include <curses.h>
+#include "sprites.h"
 
-typedef struct SPRITE {
-	int y, x;
-	int h, w;
-	const char* skin;
-} SPRITE;
-
+// the most crucial windows here
 extern WINDOW* game;
 extern WINDOW* hud;
 
-extern SPRITE player;
-extern SPRITE enemy;
-extern SPRITE bullet;
-
+// engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* genspr(SPRITE chr);
 extern void movespr(WINDOW* spr, const char* skin, int y, int x);

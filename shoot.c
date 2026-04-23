@@ -2,31 +2,17 @@
 #include <stdlib.h>
 #include "shoot.h"
 
+// still nothing for those, for now
 WINDOW* game;
 WINDOW* hud;
 
-SPRITE bullet = {
-	.skin = "*",
-	.h = 1,
-	.w = 1
-};
-
-SPRITE player = {
-	.skin = "-=^=-",
-	.h = 1,
-	.w = 5,
-	.y = 45,
-	.x = 75/2
-};
-
-SPRITE enemy = {
-	.skin = "-=v=-",
-	.h = 1,
-	.w = 5,
-	.y = 5,
-	.x = 75/2
-};
-
+// create a window with
+// h height,
+// w width,
+// at
+// y location,
+// and x location,
+// with or without border!
 WINDOW* create_win(int h, int w, int y, int x, bool border) {
 	WINDOW* win;
 	win = newwin(h, w, y, x);
@@ -36,8 +22,11 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 	return win;
 }
 
+// generate sprite from character data
 WINDOW* genspr(SPRITE chr) {
 	WINDOW* spr;
+	// make them windows so that ncurses understands
+	// them
 	spr = derwin(game, chr.h, chr.w, chr.y, chr.x);
 	wprintw(spr, "%s", chr.skin);
 	wrefresh(spr);
@@ -45,6 +34,7 @@ WINDOW* genspr(SPRITE chr) {
 	return spr;
 }
 
+// move it
 void movespr(WINDOW* spr, const char* skin, int y, int x) {
 	werase(spr);
 	touchwin(game);
@@ -55,57 +45,77 @@ void movespr(WINDOW* spr, const char* skin, int y, int x) {
 	doupdate();
 }
 
+// what the game is about, we need to specify
+// whom we want to shoot, where we're coming from
+// and where the opponent is
 bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
+	// use the player's coordinates as the base
 	bullet.y = player.y - 1;
 	bullet.x = player.x + 2;
-	bool killed = false;
+	// ^ FIXME there needs to be a better way to say it's
+	// the center that we want
+	bool killed = false; // we haven't killed anyone (yet!)
 	WINDOW* bullet_w = genspr(bullet);
 
+	// move that bullet thing up!
 	for (; bullet.y >= 1; --bullet.y) {
 		wmove(game, bullet.y, bullet.x);
 		movespr(bullet_w, bullet.skin, bullet.y, bullet.x);
 		wrefresh(game);
 
+		// if the enemy is around, check if the bullet
+		// hit its hitbox (its y position and horizontal center)
 		if (tgt != NULL &&
 			bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
 			collide(tgt);
 			killed = true;
 			goto cleanup;
+			// it makes sense that it disappears after hitting
+			// something before the wall tho'
 		}
 
 		usleep(5000);
 	}
 
 cleanup:
-	werase(bullet_w);
+	werase(bullet_w); // make it disappear!
 	wrefresh(bullet_w);
-	delwin(bullet_w);
+	delwin(bullet_w); // make curses know it disappeared!
 
-	return killed;
+	return killed; // and that's what we feed `kill` in main()
 }
 
+// here comes the BOMB
 void boom(WINDOW* spr, SPRITE chr) {
 	int y = 0;
 	int x = 0;
 	int tick = 1000;
+	// 1k iterations just sounds reasonable, it's not
+	// too long nor too short (shorter than Touhou's,
+	// even···)
 
 	while (tick >= 0) {
+		// for the animation, let's just fill
+		// random spots of the game window with
+		// dots, like debris!
 		y = rand() % 50;
 		x = rand() % 80;
 		mvwaddch(game, y, x, '.');
 		wrefresh(game);
-		usleep(500);
+		usleep(500); // don't make it too instant tho' (.0005 seconds)
 		--tick;
 	}
 
-	wclear(game);
-	box(game, 0, 0);
+	wclear(game); // and finally, clear everything on the screen
+	box(game, 0, 0); // but we do have to draw its borders again···
 	movespr(spr, chr.skin, chr.y, chr.x);
+	// ^ and restore the player's position···
 }
 
+// if the bullet hit something, let curses know
 void collide(WINDOW* tgt) {
-	werase(tgt);
+	werase(tgt); // erase the target
 	wrefresh(tgt);
-	delwin(tgt);
+	delwin(tgt); // make curses now the target is dead
 }
