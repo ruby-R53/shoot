@@ -35,40 +35,42 @@ WINDOW* genspr(SPRITE chr) {
 }
 
 // move it
-void movespr(WINDOW* spr, const char* skin, int y, int x) {
-	werase(spr);
-	touchwin(game);
-	mvderwin(spr, y, x);
+void movespr(SPRITE spr, int y, int x) {
+	werase(spr.win); // first, delete its trail
+	touchwin(game); // but the parent window must be made aware of that
+	mvderwin(spr.win, y, x); // before its derived one can actually move
 
-	wprintw(spr, "%s", skin);
-	wnoutrefresh(spr);
+	// now actually show the thing at its specific
+	// coordinates
+	wprintw(spr.win, "%s", spr.skin);
+	wnoutrefresh(spr.win);
 	doupdate();
 }
 
 // what the game is about, we need to specify
 // whom we want to shoot, where we're coming from
 // and where the opponent is
-bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
+bool shoot(SPRITE player, SPRITE enemy) {
 	// use the player's coordinates as the base
 	bullet.y = player.y - 1;
 	bullet.x = player.x + 2;
 	// ^ FIXME there needs to be a better way to say it's
 	// the center that we want
 	bool killed = false; // we haven't killed anyone (yet!)
-	WINDOW* bullet_w = genspr(bullet);
+	bullet.win = genspr(bullet);
 
 	// move that bullet thing up!
 	for (; bullet.y >= 1; --bullet.y) {
 		wmove(game, bullet.y, bullet.x);
-		movespr(bullet_w, bullet.skin, bullet.y, bullet.x);
+		movespr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
 
 		// if the enemy is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
-		if (tgt != NULL &&
+		if (enemy.win != NULL &&
 			bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
-			collide(tgt);
+			collide(enemy);
 			killed = true;
 			goto cleanup;
 			// it makes sense that it disappears after hitting
@@ -79,15 +81,15 @@ bool shoot(WINDOW* tgt, SPRITE player, SPRITE enemy) {
 	}
 
 cleanup:
-	werase(bullet_w); // make it disappear!
-	wrefresh(bullet_w);
-	delwin(bullet_w); // make curses know it disappeared!
+	werase(bullet.win); // make it disappear!
+	wrefresh(bullet.win);
+	delwin(bullet.win); // make curses know it disappeared!
 
 	return killed; // and that's what we feed `kill` in main()
 }
 
 // here comes the BOMB
-void boom(WINDOW* spr, SPRITE chr) {
+void boom(SPRITE spr) {
 	int y = 0;
 	int x = 0;
 	int tick = 1000;
@@ -109,13 +111,13 @@ void boom(WINDOW* spr, SPRITE chr) {
 
 	wclear(game); // and finally, clear everything on the screen
 	box(game, 0, 0); // but we do have to draw its borders again···
-	movespr(spr, chr.skin, chr.y, chr.x);
+	movespr(spr, spr.y, spr.x);
 	// ^ and restore the player's position···
 }
 
 // if the bullet hit something, let curses know
-void collide(WINDOW* tgt) {
-	werase(tgt); // erase the target
-	wrefresh(tgt);
-	delwin(tgt); // make curses now the target is dead
+void collide(SPRITE spr) {
+	werase(spr.win); // erase the target
+	wrefresh(spr.win);
+	delwin(spr.win); // make curses now the target is dead
 }
