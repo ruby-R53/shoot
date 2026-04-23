@@ -16,8 +16,9 @@ int main(void) {
 	// there has to be enough to fit our game in tho', 85x53 chars
 	if (ymax < 53 || xmax < 85) {
 		endwin();
-		printf("Your terminal isn't at least 85x53 characters!\n");
-		printf("Please try resizing your window and try again.\n");
+		printf("%s\n%s\n",
+				"Your terminal isn't at least 85x53 characters!",
+				"Please try resizing your window and try again.");
 		exit(1);
 	}
 
@@ -37,7 +38,7 @@ int main(void) {
 	player.win = genspr(player); // player
 	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
 
-	int bombs = 3; // this clears EVERYTHING on the screen but use it as a last resort
+	int bombs = 3; // this clears EVERYTHING on the screen so use it as a last resort
 	bombstatus(bombs); // show that to the user
 
 	int key = 0; // this is what's gonna carry what getch() gets
