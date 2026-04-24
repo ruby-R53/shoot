@@ -79,7 +79,7 @@ int main(void) {
 				if (player.y > 2) // but why would you shoot the wall brah
 					// this function not only shoots but also kills, so
 					// feed what it returns to the kill tracker
-					enemy.hp = shoot(player, enemy);
+					enemy.hp = shoot();
 
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) enemy.win = NULL;
@@ -91,9 +91,7 @@ int main(void) {
 				if (bombs > 0) {
 					--bombs;
 					bombstatus(bombs);
-					boom();
-					// these arguments must be passed so that after the screen gets
-					// cleared, the player's sprite can be redrawn
+					boom(); // animation plus redraw of the sprites
 				}
 				break;
 		}

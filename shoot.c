@@ -49,7 +49,7 @@ void movespr(SPRITE spr, int y, int x) {
 // what the game is about, we need to specify
 // whom we want to shoot, where we're coming from
 // and where the opponent is
-int shoot(SPRITE player, SPRITE enemy) {
+int shoot(void) {
 	// use the player's coordinates as the base
 	bullet.y = player.y - 1;
 	bullet.x = player.x + 2;
