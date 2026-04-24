@@ -4,7 +4,6 @@
 
 // still nothing for those, for now
 WINDOW* game;
-HUD hud;
 
 // create a window with
 // h height,
@@ -38,7 +37,7 @@ WINDOW* genspr(SPRITE chr) {
 void movespr(SPRITE spr, int y, int x) {
 	werase(spr.win); // first, delete its trail
 	touchwin(game); // but the parent window must be made aware of that
-	mvderwin(spr.win, y, x); // before its derived one can actually move
+	mvderwin(spr.win, y, x); // before its derived one (the sprite) can actually move
 
 	// now actually show the thing at its specific
 	// coordinates
@@ -69,9 +68,8 @@ int shoot(SPRITE player, SPRITE enemy) {
 		if (enemy.hp != 0 &&
 			bullet.y == enemy.y &&
 			bullet.x == (enemy.x+2)) {
-			hit(enemy);
 			--enemy.hp;
-			health(enemy, hud.top);
+			health(enemy);
 			if (enemy.hp == 0) kill(enemy);
 			goto cleanup;
 			// it makes sense that it disappears after hitting
@@ -85,12 +83,14 @@ cleanup:
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
+	if (enemy.hp > 0) movespr(enemy, enemy.y, enemy.x);
+	// ^ and redraw the thing in case it got hit but is still alive
 
 	return enemy.hp; // and that will be kept track of in `main()`
 }
 
 // here comes the BOMB
-void boom(SPRITE spr) {
+void boom(void) {
 	int y = 0;
 	int x = 0;
 	int tick = 1000;
@@ -112,8 +112,10 @@ void boom(SPRITE spr) {
 
 	wclear(game); // and finally, clear everything on the screen
 	box(game, 0, 0); // but we do have to draw its borders again···
-	movespr(spr, spr.y, spr.x);
-	// ^ and restore the player's position···
+	movespr(player, player.y, player.x); // and restore the players' positions···
+	// FIXME without this check, the player's sprite won't render
+	// it's a little hacky but it should be a temporary fix
+	if (enemy.win != NULL) movespr(enemy, enemy.y, enemy.x);
 }
 
 // if someone got killed, make ncurses actually kill them too
@@ -123,22 +125,15 @@ void kill(SPRITE spr) {
 	delwin(spr.win); // make curses now the target is dead
 }
 
-// if we hit something, let curses know
-void hit(SPRITE spr) {
-	usleep(5000);
-	movespr(spr, spr.y, spr.x);
-	wrefresh(spr.win);
-}
-
 // health status for each sprite
-void health(SPRITE spr, WINDOW* dsp) {
-	if (spr.hp == 0) {
-		mvwprintw(dsp, 0, 0, "Killed!");
-		wrefresh(dsp);
+void health(SPRITE spr) {
+	if (spr.hp == 0) { // show a message to the player
+		mvwprintw(spr.hud, 0, 0, "Killed!");
+		wrefresh(spr.hud);
 		usleep(125000);
-		werase(dsp);
-	} else
-		mvwprintw(dsp, 0, 0, "HP: %02d", spr.hp);
+		werase(spr.hud);
+	} else // pad it with zeros, i want it to be higher at a later point
+		mvwprintw(spr.hud, 0, 0, "HP: %02d", spr.hp);
 
-	wrefresh(dsp);
+	wrefresh(spr.hud);
 }

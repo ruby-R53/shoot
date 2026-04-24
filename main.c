@@ -29,8 +29,8 @@ int main(void) {
 
 	// finally, render where the
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
-	hud.top    = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
-	hud.bottom = create_win(2, 20, (ymax+50)/2, (xmax-20)/2, false);
+	player.hud = create_win(2, 20, (ymax+50)/2, (xmax-20)/2, false);
+	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 	// ^ and its HUDs
 
 	keypad(game, TRUE); // support for arrow keys
@@ -39,8 +39,9 @@ int main(void) {
 	player.win = genspr(player); // player
 	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
 
-	health(player, hud.bottom);
-	health(enemy, hud.top);
+	// show their respective HPs
+	health(player);
+	health(enemy);
 
 	int bombs = 3; // this clears EVERYTHING on the screen so use it as a last resort
 	bombstatus(bombs); // show that to the user
@@ -80,16 +81,17 @@ int main(void) {
 					// feed what it returns to the kill tracker
 					enemy.hp = shoot(player, enemy);
 
-				if (enemy.hp == 0 && enemy.win != NULL) { // if we killed the opponent···
-					enemy.win = NULL; // tell shoot() our enemy is dead
-				} // if not, try again!
+				// if we killed our opponent···
+				if (enemy.hp == 0 && enemy.win != NULL) enemy.win = NULL;
+				// tell shoot() our enemy is dead
+				// if not, try again!
 				break;
 
 			case 'x': // 'x' for bombing!
 				if (bombs > 0) {
 					--bombs;
 					bombstatus(bombs);
-					boom(player);
+					boom();
 					// these arguments must be passed so that after the screen gets
 					// cleared, the player's sprite can be redrawn
 				}
@@ -97,13 +99,12 @@ int main(void) {
 		}
 	}
 
-	delwin(hud.top); // FIXME
-	delwin(hud.bottom);
+	delwin(player.hud);
 	endwin();
 	return 0;
 }
 
 void bombstatus(int bombs) { // bomb tracker updater
-	mvwprintw(hud.bottom, 1, 0, "Available Bombs: %d", bombs);
-	wrefresh(hud.bottom);
+	mvwprintw(player.hud, 1, 0, "Available Bombs: %d", bombs);
+	wrefresh(player.hud);
 }
