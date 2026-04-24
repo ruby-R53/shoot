@@ -79,7 +79,7 @@ int main(void) {
 				if (player.y > 2) // but why would you shoot the wall brah
 					// this function not only shoots but also kills, so
 					// feed what it returns to the kill tracker
-					enemy.hp = shoot();
+					enemy.hp = shoot(player, enemy);
 
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) enemy.win = NULL;

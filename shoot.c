@@ -49,10 +49,10 @@ void movespr(SPRITE spr, int y, int x) {
 // what the game is about, we need to specify
 // whom we want to shoot, where we're coming from
 // and where the opponent is
-int shoot(void) {
-	// use the player's coordinates as the base
-	bullet.y = player.y - 1;
-	bullet.x = player.x + 2;
+int shoot(SPRITE src, SPRITE dst) {
+	// use src's coordinates as the base
+	bullet.y = src.y - 1;
+	bullet.x = src.x + 2;
 	// ^ FIXME there needs to be a better way to say it's
 	// the center that we want
 	bullet.win = genspr(bullet);
@@ -63,14 +63,14 @@ int shoot(void) {
 		movespr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
 
-		// if the enemy is around, check if the bullet
+		// if our target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
-		if (enemy.hp != 0 &&
-			bullet.y == enemy.y &&
-			bullet.x == (enemy.x+2)) {
-			--enemy.hp;
-			health(enemy);
-			if (enemy.hp == 0) kill(enemy);
+		if (dst.hp != 0 &&
+			bullet.y == dst.y &&
+			bullet.x == (dst.x+2)) {
+			--dst.hp;
+			health(dst);
+			if (dst.hp == 0) kill(dst);
 			goto cleanup;
 			// it makes sense that it disappears after hitting
 			// something before the wall tho'
@@ -83,10 +83,10 @@ cleanup:
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
-	if (enemy.hp > 0) movespr(enemy, enemy.y, enemy.x);
+	if (dst.hp > 0) movespr(dst, dst.y, dst.x);
 	// ^ and redraw the thing in case it got hit but is still alive
 
-	return enemy.hp; // and that will be kept track of in `main()`
+	return dst.hp; // and that will be kept track of in `main()`
 }
 
 // here comes the BOMB
