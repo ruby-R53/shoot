@@ -2,7 +2,9 @@
 #include <unistd.h>
 #include "shoot.h"
 
-void bombstatus(int bombs);
+int bombs = 3; // initial amount of bombs, this clears EVERYTHING on screen so use wisely
+void bombstatus(void);
+int ingame(void);
 
 int main(void) {
 	// initiate our screen, but
@@ -22,7 +24,7 @@ int main(void) {
 		exit(1);
 	}
 
-	nodelay(game, TRUE); // to make getch() non-blocking
+	nodelay(game, TRUE); // to make wgetch() non-blocking
 	noecho(); // do NOT show the user's keystrokes here
 	curs_set(0); // nor the cursor, this is a game after all
 	raw(); // and don't do any input buffering
@@ -39,17 +41,34 @@ int main(void) {
 	player.win = genspr(player); // player
 	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
 
+	// keep track of what level we left at
+	// to show the user some message
+	unsigned int finish = ingame();
+	
+	endwin();
+
+	if (finish > 0) printf("Quit at level %d!\n", finish);
+	else printf("You won, thank you for playing!\n");
+	return 0;
+}
+
+// and this is where the actual game happens!
+int ingame(void) {
+	int key = 0; // this is what's gonna carry what getch() gets
+	int level = 1; // start at level 1 'cos 0 sounds too nerdy (???)
+	enemy.hp = level + 5; // higher than the player's but not much
+
 	// show their respective HPs
 	health(player);
 	health(enemy);
 
-	int bombs = 3; // this clears EVERYTHING on the screen so use it as a last resort
-	bombstatus(bombs); // show that to the user
+	bombstatus(); // show that to the user
 
-	int key = 0; // this is what's gonna carry what getch() gets
-	
+	goto counter; // ugh i hate calling the same thing twice
+
 	// now, the main loop
-	while ((key = wgetch(game)) != 'q') { // 'q' exits the game!
+	while (level <= 12) {
+		key = wgetch(game);
 		switch(key) {
 			// yes, you can use Vim keys here
 			case KEY_UP:
@@ -82,7 +101,10 @@ int main(void) {
 					enemy.hp = shoot(player, enemy);
 
 				// if we killed our opponent···
-				if (enemy.hp == 0 && enemy.win != NULL) enemy.win = NULL;
+				if (enemy.hp == 0 && enemy.win != NULL) {
+					++level;
+					enemy.win = NULL;
+				}
 				// tell shoot() our enemy is dead
 				// if not, try again!
 				break;
@@ -90,19 +112,26 @@ int main(void) {
 			case 'x': // 'x' for bombing!
 				if (bombs > 0) {
 					--bombs;
-					bombstatus(bombs);
+					bombstatus();
 					boom(); // animation plus redraw of the sprites
 				}
 				break;
+
+			case 'q': // 'q' exits the game!
+				delwin(player.hud);
+				return level;
+				break;
 		}
+
+counter:
+		mvwprintw(player.hud, 0, 8, "Level: %d", level);
+		wrefresh(player.hud);
 	}
 
-	delwin(player.hud);
-	endwin();
 	return 0;
 }
 
-void bombstatus(int bombs) { // bomb tracker updater
+void bombstatus(void) { // bomb tracker updater
 	mvwprintw(player.hud, 1, 0, "Available Bombs: %d", bombs);
 	wrefresh(player.hud);
 }
