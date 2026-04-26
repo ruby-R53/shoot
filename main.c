@@ -45,8 +45,11 @@ int main(void) {
 	// to show the user some message
 	unsigned int finish = ingame();
 	
+	// finish curses the moment the player's done
 	endwin();
 
+	// and tell them where they stopped, not sure how useful
+	// this can be
 	if (finish > 0) printf("Quit at level %d!\n", finish);
 	else printf("You won, thank you for playing!\n");
 	return 0;
@@ -67,7 +70,7 @@ int ingame(void) {
 	goto counter; // ugh i hate calling the same thing twice
 
 	// now, the main loop
-	while (level <= 12) {
+	while (level <= 12) { // 12 levels sounds reasonable
 		key = wgetch(game);
 		switch(key) {
 			// yes, you can use Vim keys here
@@ -105,7 +108,8 @@ int ingame(void) {
 					++level;
 					enemy.win = NULL;
 				}
-				// tell shoot() our enemy is dead
+				// tell shoot() our enemy is dead and raise the level
+				// to challenge the player further
 				// if not, try again!
 				break;
 
@@ -122,6 +126,8 @@ int ingame(void) {
 				return level;
 				break;
 		}
+
+		enemctrl();
 
 counter:
 		mvwprintw(player.hud, 0, 8, "Level: %d", level);

@@ -137,3 +137,39 @@ void health(SPRITE spr) {
 
 	wrefresh(spr.hud);
 }
+
+void enemctrl(void) {
+	typedef enum MOVE {
+		MV_SHOOT,
+		MV_UP,
+		MV_DOWN,
+		MV_RIGHT,
+		MV_LEFT
+	} move_t;
+
+	move_t move = 0;
+	move = rand() % 4;
+	switch(move) {
+		case MV_SHOOT:
+			if (enemy.y > 2) player.hp = shoot(enemy, player);
+			break;
+
+		case MV_UP:
+			if (enemy.y >= 2) movespr(enemy, --enemy.y, enemy.x);
+			break;
+
+		case MV_DOWN:
+			if (enemy.y <= 47) movespr(enemy, ++enemy.y, enemy.x);
+			break;
+
+		case MV_LEFT:
+			if (enemy.x >= 2) movespr(enemy, enemy.y, --enemy.x);
+			break;
+
+		case MV_RIGHT:
+			if (enemy.x <= 73) movespr(enemy, enemy.y, ++enemy.x);
+			break;
+	}
+
+	return;
+}
