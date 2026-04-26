@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 #include "shoot.h"
 
 // still nothing for those, for now
@@ -47,18 +48,25 @@ void movespr(SPRITE spr, int y, int x) {
 }
 
 // what the game is about, we need to specify
-// whom we want to shoot, where we're coming from
-// and where the opponent is
+// where we're shooting from and where the
+// opponent is
 int shoot(SPRITE src, SPRITE dst) {
 	// use src's coordinates as the base
-	bullet.y = src.y - 1;
+	bullet.y = src.y;
 	bullet.x = src.x + 2;
 	// ^ FIXME there needs to be a better way to say it's
-	// the center that we want
+	// the sprite's center that we want
+
+	// spawn the bullet already
 	bullet.win = genspr(bullet);
 
-	// move that bullet thing up!
-	for (; bullet.y >= 1; --bullet.y) {
+	// check if the enemy is shooting to flip the
+	// bullet's direction, otherwise don't do anything
+	bool flip = (src.win == player.win) ? false : true;
+
+	// move that bullet thing or down, depending on
+	// who's shooting!
+	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
 		wmove(game, bullet.y, bullet.x);
 		movespr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
@@ -80,6 +88,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	}
 
 cleanup:
+	movespr(src, src.y, src.x);
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
@@ -87,35 +96,6 @@ cleanup:
 	// ^ and redraw the thing in case it got hit but is still alive
 
 	return dst.hp; // and that will be kept track of in `main()`
-}
-
-// here comes the BOMB
-void boom(void) {
-	int y = 0;
-	int x = 0;
-	int tick = 1000;
-	// 1k iterations just sounds reasonable, it's not
-	// too long nor too short (shorter than Touhou's,
-	// even···)
-
-	while (tick >= 0) {
-		// for the animation, let's just fill
-		// random spots of the game window with
-		// dots, like debris!
-		y = rand() % 50;
-		x = rand() % 80;
-		mvwaddch(game, y, x, '.');
-		wrefresh(game);
-		usleep(500); // don't make it too instant tho' (.0005 seconds)
-		--tick;
-	}
-
-	wclear(game); // and finally, clear everything on the screen
-	box(game, 0, 0); // but we do have to draw its borders again···
-	movespr(player, player.y, player.x); // and restore the players' positions···
-	// FIXME without this check, the player's sprite won't render
-	// it's a little hacky but it should be a temporary fix
-	if (enemy.win != NULL) movespr(enemy, enemy.y, enemy.x);
 }
 
 // if someone got killed, make ncurses actually kill them too
@@ -141,17 +121,17 @@ void health(SPRITE spr) {
 void enemctrl(void) {
 	typedef enum MOVE {
 		MV_SHOOT,
-		MV_UP,
+		MV_LEFT,
 		MV_DOWN,
-		MV_RIGHT,
-		MV_LEFT
+		MV_UP,
+		MV_RIGHT
 	} move_t;
 
-	move_t move = 0;
-	move = rand() % 4;
+	srand(time(0)); // make the moves "truly" random
+	move_t move = rand() % 4;
 	switch(move) {
 		case MV_SHOOT:
-			if (enemy.y > 2) player.hp = shoot(enemy, player);
+			if (enemy.y < 48) player.hp = shoot(enemy, player);
 			break;
 
 		case MV_UP:

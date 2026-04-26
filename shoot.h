@@ -9,7 +9,6 @@ extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* genspr(SPRITE chr);
 extern void movespr(SPRITE spr, int y, int x);
 extern int shoot(SPRITE src, SPRITE dst);
-extern void boom(void);
 extern void kill(SPRITE spr);
 extern void health(SPRITE spr);
 

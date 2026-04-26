@@ -2,8 +2,6 @@
 #include <unistd.h>
 #include "shoot.h"
 
-int bombs = 3; // initial amount of bombs, this clears EVERYTHING on screen so use wisely
-void bombstatus(void);
 int ingame(void);
 
 int main(void) {
@@ -31,7 +29,7 @@ int main(void) {
 
 	// finally, render where the
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
-	player.hud = create_win(2, 20, (ymax+50)/2, (xmax-20)/2, false);
+	player.hud = create_win(2, 9, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 	// ^ and its HUDs
 
@@ -64,8 +62,6 @@ int ingame(void) {
 	// show their respective HPs
 	health(player);
 	health(enemy);
-
-	bombstatus(); // show that to the user
 
 	goto counter; // ugh i hate calling the same thing twice
 
@@ -113,31 +109,19 @@ int ingame(void) {
 				// if not, try again!
 				break;
 
-			case 'x': // 'x' for bombing!
-				if (bombs > 0) {
-					--bombs;
-					bombstatus();
-					boom(); // animation plus redraw of the sprites
-				}
-				break;
-
 			case 'q': // 'q' exits the game!
 				delwin(player.hud);
 				return level;
 				break;
 		}
 
+		// it's the enemy's turn!
 		enemctrl();
 
 counter:
-		mvwprintw(player.hud, 0, 8, "Level: %d", level);
+		mvwprintw(player.hud, 1, 0, "Level: %02d", level);
 		wrefresh(player.hud);
 	}
 
 	return 0;
-}
-
-void bombstatus(void) { // bomb tracker updater
-	mvwprintw(player.hud, 1, 0, "Available Bombs: %d", bombs);
-	wrefresh(player.hud);
 }
