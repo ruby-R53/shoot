@@ -4,7 +4,7 @@
 
 int ingame(void);
 
-int main(void) {
+void main(void) {
 	// initiate our screen, but
 	// run some checks first
 	initscr();
@@ -43,9 +43,8 @@ int main(void) {
 	// to show the user some message
 	unsigned int finish = ingame();
 
+	// and once the above returns, we're done
 	endgame(finish);
-
-	return 0;
 }
 
 // and this is where the actual game happens!

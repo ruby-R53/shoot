@@ -239,6 +239,7 @@ bool gameover(int level) {
 				break;
 
 			case 'n': // or end it all
+				transition();
 				endgame(level);
 				return true;
 				break;
@@ -257,5 +258,6 @@ void endgame(int level) {
 	if (level > 0) printf("Quit at level %d!\n", level);
 	else printf("You won, thank you for playing!\n");
 
-	return;
+	// and we're done
+	exit(0);
 }

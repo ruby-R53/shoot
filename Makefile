@@ -1,4 +1,4 @@
-FLAGS = -Wall -lncurses -ltinfo
+FLAGS = -Wall -Wno-main -lncurses -ltinfo
 CODES = shoot.c sprites.c main.c
 
 ifdef DBG
