@@ -137,13 +137,10 @@ void transition(void) {
 	srand(time(NULL));
 
 	while (tick >= 0) {
-		// to choose a random spot to fill
-		y = rand() % 49;
-		x = rand() % 79;
-
-		// and these are the boundaries
-		if (y == 0) ++y;
-		if (x == 0) ++x;
+		// to choose a random spot to fill,
+		// with the walls in mind
+		y = 1 + rand() % 48;
+		x = 1 + rand() % 78;
 
 		// the screen filler is a dot, like
 		// some kind of debris
@@ -191,13 +188,13 @@ void enemctrl(void) {
 	typedef enum MOVE {
 		MV_SHOOT,
 		MV_LEFT,
-		MV_DOWN,
 		MV_UP,
+		MV_DOWN,
 		MV_RIGHT
 	} move_t;
 
 	srand(time(NULL)); // make the moves "truly" random
-	move_t move = rand() % 4;
+	move_t move = random() % 4;
 	// ^ FIXME there actually seems to be some bias towards
 	// moving to the same direction over and over
 	switch(move) {
@@ -231,8 +228,15 @@ void newlvl(int level) {
 
 	// regenerate the enemy sprites,
 	// along with an upgraded HP
-	enemy.win = genspr(enemy);
+	// and new positions
+	enemy.y   = 2 + rand() % 45;
+	enemy.x   = 2 + rand() % 73;
 	enemy.hp  = level + 5;
+	enemy.win = genspr(enemy);
+
+	// and +1 the player's HP at
+	// every 2 levels
+	player.hp += level % 2;
 
 	// display both health meters
 	health(enemy);
@@ -248,7 +252,7 @@ void newlvl(int level) {
 
 // we lost, what's next?
 bool gameover(int level) {
-	int key = 0;
+	int key = 0; // initialize the input buffer
 	transition(); // play that cool transition tho'
 
 	// and here's the menu itself
@@ -259,7 +263,9 @@ bool gameover(int level) {
 	while (player.win == NULL) { // loop it
 		key = wgetch(game);
 		switch(key) {
-			case 'y': // just start a new game like nothing had happened
+			case 'y':
+				// just restore the stats and start a
+				// new game like nothing had happened
 				player.win = genspr(player);
 				player.hp  = 4;
 				newlvl(level);
@@ -267,7 +273,6 @@ bool gameover(int level) {
 				break;
 
 			case 'n': // or end it all
-				transition();
 				endgame(level);
 				return true;
 				break;
@@ -278,6 +283,9 @@ bool gameover(int level) {
 }
 
 void endgame(int level) {
+	// gracefully end with a transition
+	transition();
+
 	// finish curses now that the player's done
 	endwin();
 

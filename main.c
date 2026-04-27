@@ -95,9 +95,10 @@ int ingame(void) {
 
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) {
-					++level; // raise the level
 					enemy.win = NULL; // end the sprite
-					newlvl(level); // but create it again
+					newlvl(++level);
+					// ^ but create it again, on a different
+					// level with new stats
 				}
 				// if not, try again!
 				break;
@@ -111,6 +112,7 @@ int ingame(void) {
 		// it's the enemy's turn!
 		enemctrl();
 
+		// what to do whenever the player dies
 		if (player.hp == 0) {
 			player.win = NULL;
 			bool end = gameover(level);
@@ -122,5 +124,7 @@ counter:
 		wrefresh(player.hud);
 	}
 
+	// this is only executed when we win, since the loop
+	// actually ends when its condition is no longer met
 	return 0;
 }
