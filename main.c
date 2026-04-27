@@ -42,14 +42,9 @@ int main(void) {
 	// keep track of what level we left at
 	// to show the user some message
 	unsigned int finish = ingame();
-	
-	// finish curses the moment the player's done
-	endwin();
 
-	// and tell them where they stopped, not sure how useful
-	// this can be
-	if (finish > 0) printf("Quit at level %d!\n", finish);
-	else printf("You won, thank you for playing!\n");
+	endgame(finish);
+
 	return 0;
 }
 
@@ -103,9 +98,7 @@ int ingame(void) {
 				if (enemy.hp == 0 && enemy.win != NULL) {
 					++level; // raise the level
 					enemy.win = NULL; // end the sprite
-					newlvl(); // but create it again
-					enemy.hp = level + 5; // then raise its HP
-					health(enemy); // and update it
+					newlvl(level); // but create it again
 				}
 				// if not, try again!
 				break;
@@ -118,6 +111,12 @@ int ingame(void) {
 
 		// it's the enemy's turn!
 		enemctrl();
+
+		if (player.hp == 0) {
+			player.win = NULL;
+			bool end = gameover(level);
+			if (end) return level;
+		}
 
 counter:
 		mvwprintw(player.hud, 1, 0, "Level: %02d", level);

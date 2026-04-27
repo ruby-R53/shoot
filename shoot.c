@@ -110,7 +110,7 @@ void health(SPRITE spr) {
 	if (spr.hp == 0) { // show a message to the player
 		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 7) / 2), "Killed!");
 		wrefresh(spr.hud);
-		usleep(125000);
+		usleep(125000); // for .125 seconds
 		werase(spr.hud);
 	} else // pad it with zeros, i want it to be higher at a later point
 		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 6) / 2), "HP: %02d", spr.hp);
@@ -118,7 +118,48 @@ void health(SPRITE spr) {
 	wrefresh(spr.hud);
 }
 
+// play a cool little transition between
+// stages and moments
+// should more kinds of it be implemented?
+void transition(void) {
+	int y = 0;
+	int x = 0;
+	int tick = 1000;
+	// 1k iterations seems reasonable, it doesn't
+	// take very long to happen and it doesn't
+	// fill the screen so much
+
+	// initialize the RNG
+	srand(time(NULL));
+
+	while (tick >= 0) {
+		y = rand() % 49;
+		x = rand() % 79;
+
+		if (y == 0) ++y;
+		if (x == 0) ++x;
+
+		// ^ these are the boundaries
+
+		// the screen filler is a dot, like
+		// some kind of debris
+		mvwaddch(game, y, x, '.');
+		wrefresh(game);
+		usleep(500);
+
+		--tick; // one dot printed, 999 more to go
+	}
+
+	// and finally clear this mess
+	wclear(game);
+	box(game, 0, 0); // which means redrawing the box
+
+	return;
+}
+
+// the enemy's movements, driven by RNG
 void enemctrl(void) {
+	// one of these must be selected at random
 	typedef enum MOVE {
 		MV_SHOOT,
 		MV_LEFT,
@@ -156,6 +197,65 @@ void enemctrl(void) {
 	return;
 }
 
-void newlvl(void) {
+// what to do on a new level
+void newlvl(int level) {
+	transition(); // play a cool transition
+
+	// regenerate the enemy sprites,
+	// along with an upgraded HP
 	enemy.win = genspr(enemy);
+	enemy.hp  = level + 5;
+
+	// display both health meters
+	health(enemy);
+	health(player);
+
+	// because of the transition animation,
+	// the screen got cleared, so redraw
+	// the player too
+	movespr(player, player.y, player.x);
+
+	return;
+}
+
+// we lost, what's next?
+bool gameover(int level) {
+	int key = 0;
+	transition(); // play that cool transition tho'
+
+	// and here's the menu itself
+	mvwprintw(game, ((50 - 3) / 2), ((80 - 15) / 2), "Mission failed!");
+	mvwprintw(game, ((50 - 1) / 2), ((80 - 16) / 2), "Try again? [Y/N]");
+	wrefresh(game);
+
+	while (player.win == NULL) { // loop it
+		key = wgetch(game);
+		switch(key) {
+			case 'y': // just start a new game like nothing had happened
+				player.win = genspr(player);
+				player.hp  = 4;
+				newlvl(level);
+				return false;
+				break;
+
+			case 'n': // or end it all
+				endgame(level);
+				return true;
+				break;
+		}
+	}
+
+	return false; // just so that GCC doesn't complain
+}
+
+void endgame(int level) {
+	// finish curses now that the player's done
+	endwin();
+
+	// and tell them where they stopped, really not sure
+	// how useful or cool this is
+	if (level > 0) printf("Quit at level %d!\n", level);
+	else printf("You won, thank you for playing!\n");
+
+	return;
 }

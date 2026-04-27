@@ -11,6 +11,9 @@ extern void movespr(SPRITE spr, int y, int x);
 extern int shoot(SPRITE src, SPRITE dst);
 extern void kill(SPRITE spr);
 extern void health(SPRITE spr);
+extern void transition(void);
 
-extern void newlvl(void);
+extern void newlvl(int level);
+extern bool gameover(int level);
 extern void enemctrl(void);
+extern void endgame(int level);
