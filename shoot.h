@@ -4,7 +4,7 @@
 // the most crucial window here
 extern WINDOW* game;
 
-// engine functions
+// general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* genspr(SPRITE chr);
 extern void movespr(SPRITE spr, int y, int x);
@@ -13,6 +13,7 @@ extern void kill(SPRITE spr);
 extern void health(SPRITE spr);
 extern void transition(void);
 
+// still part of it, but a little more specific
 extern void newlvl(int level);
 extern bool gameover(int level);
 extern void enemctrl(void);
