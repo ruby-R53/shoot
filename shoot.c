@@ -193,7 +193,7 @@ void enemctrl(void) {
 		MV_RIGHT
 	} move_t;
 
-	srand(time(NULL)); // make the moves "truly" random
+	srandom(time(NULL)); // make the moves "truly" random
 	move_t move = random() % 4;
 	// ^ FIXME there actually seems to be some bias towards
 	// moving to the same direction over and over
