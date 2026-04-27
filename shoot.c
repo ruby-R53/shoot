@@ -128,18 +128,22 @@ void transition(void) {
 	// 1k iterations seems reasonable, it doesn't
 	// take very long to happen and it doesn't
 	// fill the screen so much
+	int backup[2][1000];
+	unsigned int backpos = 0;
+	// for smoothing the transition out, this will
+	// store each of y and x's positions
 
 	// initialize the RNG
 	srand(time(NULL));
 
 	while (tick >= 0) {
+		// to choose a random spot to fill
 		y = rand() % 49;
 		x = rand() % 79;
 
+		// and these are the boundaries
 		if (y == 0) ++y;
 		if (x == 0) ++x;
-
-		// ^ these are the boundaries
 
 		// the screen filler is a dot, like
 		// some kind of debris
@@ -147,10 +151,34 @@ void transition(void) {
 		wrefresh(game);
 		usleep(500);
 
+		// for transferring to the array
+		backpos = 1000 - tick;
+
+		// store current positions for later
+		backup[0][backpos] = y;
+		backup[1][backpos] = x;
+
 		--tick; // one dot printed, 999 more to go
 	}
 
-	// and finally clear this mess
+	// restore the ticker for the next step,
+	// erasing each dot out
+	tick = 1000;
+
+	while (tick >= 0) {
+		// and restore the array indexer
+		backpos = 1000 - tick;
+
+		// so that we can unfill the spots back
+		mvwaddch(game, backup[0][backpos], backup[1][backpos], ' ');
+		wrefresh(game);
+		usleep(500);
+
+		--tick; // one dot removed, 999 more to go
+	}
+
+	// and finally clear the remaining mess in case
+	// any message got printed as well
 	wclear(game);
 	box(game, 0, 0); // which means redrawing the box
 
