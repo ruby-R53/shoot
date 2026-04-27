@@ -108,12 +108,12 @@ void kill(SPRITE spr) {
 // health status for each sprite
 void health(SPRITE spr) {
 	if (spr.hp == 0) { // show a message to the player
-		mvwprintw(spr.hud, 0, 0, "Killed!");
+		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 7) / 2), "Killed!");
 		wrefresh(spr.hud);
 		usleep(125000);
 		werase(spr.hud);
 	} else // pad it with zeros, i want it to be higher at a later point
-		mvwprintw(spr.hud, 0, 0, "HP: %02d", spr.hp);
+		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 6) / 2), "HP: %02d", spr.hp);
 
 	wrefresh(spr.hud);
 }
@@ -127,8 +127,10 @@ void enemctrl(void) {
 		MV_RIGHT
 	} move_t;
 
-	srand(time(0)); // make the moves "truly" random
+	srand(time(NULL)); // make the moves "truly" random
 	move_t move = rand() % 4;
+	// ^ FIXME there actually seems to be some bias towards
+	// moving to the same direction over and over
 	switch(move) {
 		case MV_SHOOT:
 			if (enemy.y < 48) player.hp = shoot(enemy, player);
@@ -152,4 +154,8 @@ void enemctrl(void) {
 	}
 
 	return;
+}
+
+void newlvl(void) {
+	enemy.win = genspr(enemy);
 }

@@ -57,7 +57,7 @@ int main(void) {
 int ingame(void) {
 	int key = 0; // this is what's gonna carry what getch() gets
 	int level = 1; // start at level 1 'cos 0 sounds too nerdy (???)
-	enemy.hp = level + 5; // higher than the player's but not much
+	enemy.hp = 6; // higher than the player's but not much
 
 	// show their respective HPs
 	health(player);
@@ -101,11 +101,12 @@ int ingame(void) {
 
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) {
-					++level;
-					enemy.win = NULL;
+					++level; // raise the level
+					enemy.win = NULL; // end the sprite
+					newlvl(); // but create it again
+					enemy.hp = level + 5; // then raise its HP
+					health(enemy); // and update it
 				}
-				// tell shoot() our enemy is dead and raise the level
-				// to challenge the player further
 				// if not, try again!
 				break;
 

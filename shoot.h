@@ -12,4 +12,5 @@ extern int shoot(SPRITE src, SPRITE dst);
 extern void kill(SPRITE spr);
 extern void health(SPRITE spr);
 
+extern void newlvl(void);
 extern void enemctrl(void);
