@@ -2,8 +2,14 @@
 #include <unistd.h>
 #include "shoot.h"
 
+// where the game cutely initializes
+void titlescr(void);
+
+// where everything goes down
 int ingame(void);
 
+// where everything is stitched together
+// to actually work
 void main(void) {
 	// initiate our screen, but
 	// run some checks first
@@ -29,9 +35,14 @@ void main(void) {
 
 	// finally, render where the
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
+
+	// which's where we'll first show the title screen
+	// for a cool little boot
+	titlescr();
+
+	// and now its HUDs
 	player.hud = create_win(2, 9, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
-	// ^ and its HUDs
 
 	keypad(game, TRUE); // support for arrow keys
 
@@ -47,11 +58,28 @@ void main(void) {
 	endgame(finish);
 }
 
+void titlescr(void) {
+	mvwprintw(game, (50 / 2), ((80 - 6) / 2), "Shoot!");
+	mvwprintw(game, 43, ((80 - 10) / 2), "Z - start!");
+	mvwprintw(game, 44, ((80 - 9) / 2), "q - quit!");
+	wrefresh(game);
+	key = wgetch(game);
+	switch(key) {
+		case 'z':
+			transition();
+			return;
+			break;
+
+		case 'q':
+			endgame(-1);
+			break;
+	}
+}
+
 // and this is where the actual game happens!
 int ingame(void) {
-	int key = 0; // this is what's gonna carry what getch() gets
 	int level = 1; // start at level 1 'cos 0 sounds too nerdy (???)
-	enemy.hp = 6; // higher than the player's but not much
+	enemy.hp  = 6; // higher than the player's but not by much
 
 	// show their respective HPs
 	health(player);
@@ -60,7 +88,7 @@ int ingame(void) {
 	goto counter; // ugh i hate calling the same thing twice
 
 	// now, the main loop
-	while (level <= 12) { // 12 levels sounds reasonable
+	while (level <= LVL_MAX) {
 		key = wgetch(game);
 		switch(key) {
 			// yes, you can use Vim keys here

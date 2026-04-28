@@ -6,6 +6,9 @@
 // still nothing for those, for now
 WINDOW* game;
 
+// but initialize the input buffer
+int key = 0;
+
 // create a window with
 // h height,
 // w width,
@@ -134,13 +137,13 @@ void transition(void) {
 	// store each of y and x's positions
 
 	// initialize the RNG
-	srand(time(NULL));
+	srandom(time(NULL));
 
 	while (tick >= 0) {
 		// to choose a random spot to fill,
 		// with the walls in mind
-		y = 1 + rand() % 48;
-		x = 1 + rand() % 78;
+		y = 1 + random() % 48;
+		x = 1 + random() % 78;
 
 		// the screen filler is a dot, like
 		// some kind of debris
@@ -224,35 +227,35 @@ void enemctrl(void) {
 
 // what to do on a new level
 void newlvl(int level) {
-	transition(); // play a cool transition
+	if (level <= LVL_MAX) {
+		transition(); // play a cool transition
 
-	// regenerate the enemy sprites,
-	// along with an upgraded HP
-	// and new positions
-	enemy.y   = 2 + rand() % 45;
-	enemy.x   = 2 + rand() % 73;
-	enemy.hp  = level + 5;
-	enemy.win = genspr(enemy);
+		// regenerate the enemy sprites,
+		// along with an upgraded HP
+		// and new positions
+		srandom(time(NULL));
+		enemy.y   = 2 + random() % 45;
+		enemy.x   = 2 + random() % 73;
+		enemy.hp  = level + 5;
+		enemy.win = genspr(enemy);
 
-	// and +1 the player's HP at
-	// every 2 levels
-	player.hp += level % 2;
+		// and +1 the player's HP at
+		// every 2 levels
+		player.hp += level % 2;
 
-	// display both health meters
-	health(enemy);
-	health(player);
+		// display both health meters
+		health(enemy);
+		health(player);
 
-	// because of the transition animation,
-	// the screen got cleared, so redraw
-	// the player too
-	movespr(player, player.y, player.x);
-
-	return;
+		// because of the transition animation,
+		// the screen got cleared, so redraw
+		// the player too
+		movespr(player, player.y, player.x);
+	} else return;
 }
 
 // we lost, what's next?
 bool gameover(int level) {
-	int key = 0; // initialize the input buffer
 	transition(); // play that cool transition tho'
 
 	// and here's the menu itself
@@ -282,6 +285,7 @@ bool gameover(int level) {
 	return false; // just so that GCC doesn't complain
 }
 
+// end cleanup
 void endgame(int level) {
 	// gracefully end with a transition
 	transition();
@@ -292,6 +296,7 @@ void endgame(int level) {
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
 	if (level > 0) printf("Quit at level %d!\n", level);
+	else if (level < 0) ;
 	else printf("You won, thank you for playing!\n");
 
 	// and we're done
