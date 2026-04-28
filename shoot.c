@@ -20,7 +20,7 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 	WINDOW* win;
 	win = newwin(h, w, y, x);
 	if (border) box(win, 0, 0);
-	wrefresh(win);
+	wrefresh(win); // and show it
 
 	return win;
 }
@@ -28,11 +28,10 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 // generate sprite from character data
 WINDOW* genspr(SPRITE chr) {
 	WINDOW* spr;
-	// make them windows so that ncurses understands
-	// them
+	// make it a derived windows so that ncurses understands it
 	spr = derwin(game, chr.h, chr.w, chr.y, chr.x);
 	wprintw(spr, "%s", chr.skin);
-	wrefresh(spr);
+	wrefresh(spr); // and show it
 
 	return spr;
 }
@@ -56,9 +55,9 @@ void movespr(SPRITE spr, int y, int x) {
 int shoot(SPRITE src, SPRITE dst) {
 	// use src's coordinates as the base
 	bullet.y = src.y;
-	bullet.x = src.x + 2;
-	// ^ FIXME there needs to be a better way to say it's
-	// the sprite's center that we want
+	bullet.x = src.x + getmaxx(src.win) / 2;
+	// ^ the sprite's horizontal center, this is where
+	// bullets will always get shot out from
 
 	// spawn the bullet already
 	bullet.win = genspr(bullet);
@@ -187,7 +186,8 @@ void transition(void) {
 
 // the enemy's movements, driven by RNG
 void enemctrl(void) {
-	// one of these must be selected at random
+	// one of these must be selected
+	// at random
 	typedef enum MOVE {
 		MV_SHOOT,
 		MV_LEFT,
@@ -256,7 +256,8 @@ void newlvl(int level) {
 
 // we lost, what's next?
 bool gameover(int level) {
-	transition(); // play that cool transition tho'
+	// play that cool transition tho'
+	transition();
 
 	// and here's the menu itself
 	mvwprintw(game, ((50 - 3) / 2), ((80 - 15) / 2), "Mission failed!");
