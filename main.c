@@ -59,10 +59,13 @@ void main(void) {
 }
 
 void titlescr(void) {
-	mvwprintw(game, (50 / 2), ((80 - 6) / 2), "Shoot!");
-	mvwprintw(game, 43, ((80 - 10) / 2), "Z - start!");
-	mvwprintw(game, 44, ((80 - 9) / 2), "q - quit!");
+	// this is all we got for now, nothing fancy
+	mvwprintw(game, 50/2, (80-6)/2, "Shoot!");
+	mvwprintw(game, 43, (80-10)/2, "Z - start!");
+	mvwprintw(game, 44, (80-9)/2, "q - quit!");
 	wrefresh(game);
+
+	// then handle the keys
 	key = wgetch(game);
 	switch(key) {
 		case 'z':
@@ -118,7 +121,7 @@ int ingame(void) {
 			case 'z': // 'z' for shooting!
 				if (player.y > 2) // but why would you shoot the wall brah
 					// this function not only shoots but also kills, so
-					// feed what it returns to the kill tracker
+					// the enemy's HP is tracked here as well
 					enemy.hp = shoot(player, enemy);
 
 				// if we killed our opponent···
@@ -132,7 +135,11 @@ int ingame(void) {
 				break;
 
 			case 'q': // 'q' exits the game!
+				// do a little cleanup by
+				// closing the HUDs
+				delwin(enemy.hud);
 				delwin(player.hud);
+				// now get back to main()
 				return level;
 				break;
 		}
