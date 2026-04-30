@@ -64,10 +64,13 @@ void titlescr(void) {
 	// play a cool little animation for the game title
 	printart(&title, (50-title.rows)/2, (80-title.cols)/2);
 
-	// and show the keys to the user
-	mvwprintw(game, 43, (80-10)/2, "Z - start!");
-	mvwprintw(game, 44, (80-9)/2, "q - quit!");
+	// and show the keys to the user,
+	// in italics just to look cooler
+	wattron(game, A_ITALIC);
+	mvwprintw(game, 43, (80-10)/2, "Z - begin!");
+	mvwprintw(game, 44, (80-10)/2, "Q -  quit!");
 	wrefresh(game);
+	wattroff(game, A_ITALIC);
 
 	// then handle the keys
 	key = wgetch(game);
