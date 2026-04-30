@@ -69,7 +69,6 @@ int shoot(SPRITE src, SPRITE dst) {
 	// move that bullet thing or down, depending on
 	// who's shooting!
 	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
-		wmove(game, bullet.y, bullet.x);
 		movespr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
 

@@ -3,7 +3,7 @@ FLAGS = -Wall -Wno-main -lncurses -ltinfo
 
 # so that we get all the necessary
 # symbols for compiling
-SRCES = shoot.c sprites.c main.c
+SRCES = art.c shoot.c sprites.c main.c
 
 # and put this all together
 all:
