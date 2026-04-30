@@ -254,7 +254,7 @@ void newlvl(int level) {
 }
 
 // we lost, what's next?
-bool gameover(int level) {
+void gameover(int level) {
 	// play that cool transition tho'
 	transition();
 
@@ -272,17 +272,17 @@ bool gameover(int level) {
 				player.win = genspr(player);
 				player.hp  = 4;
 				newlvl(level);
-				return false;
 				break;
 
 			case 'n': // or end it all
 				endgame(level);
-				return true;
+				break;
+
+			default: // or ignore it in case if it's invalid
+				continue;
 				break;
 		}
 	}
-
-	return false; // just so that GCC doesn't complain
 }
 
 // end cleanup

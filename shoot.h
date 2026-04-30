@@ -21,6 +21,6 @@ extern void transition(void);
 
 // still part of it, but a little more specific
 extern void newlvl(int level);
-extern bool gameover(int level);
+extern void gameover(int level);
 extern void enemctrl(void);
 extern void endgame(int level);

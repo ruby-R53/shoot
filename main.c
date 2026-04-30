@@ -157,8 +157,7 @@ int ingame(void) {
 		// what to do whenever the player dies
 		if (player.hp == 0) {
 			player.win = NULL;
-			bool end = gameover(level);
-			if (end) return level;
+			gameover(level);
 		}
 
 counter:
