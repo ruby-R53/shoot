@@ -6,6 +6,6 @@ typedef struct ART {
 	const char* art[]; // the art itself
 } ART;
 
-extern void printart(ART* a);
+extern void printart(ART* art, int y, int x);
 
 extern ART title;

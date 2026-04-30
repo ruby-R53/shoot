@@ -61,27 +61,10 @@ void main(void) {
 
 // how the title screen is displayed
 void titlescr(void) {
-	// play a cool little sliding animation for
-	// the game title
-	title.win = derwin(
-			game,
-			title.rows,
-			title.cols,
-			(50-title.rows)/2,
-			(80-title.cols)/2
-	);
-	/* how the fuck do you move this shit, this ain't working brah
-	for (int i = 77; i >= (80-title.cols)/2; --i) {
-		werase(title.win);
-		mvderwin(title.win, (50-title.rows)/2, i);
-		printart(&title);
-		touchwin(game);
-		wrefresh(title.win);
-		usleep(25000);
-	}
-	*/
-	printart(&title); // just make it show a cool static art for now
-	delwin(title.win);
+	// play a cool little animation for the game title
+	printart(&title, (50-title.rows)/2, (80-title.cols)/2);
+
+	// and show the keys to the user
 	mvwprintw(game, 43, (80-10)/2, "Z - start!");
 	mvwprintw(game, 44, (80-9)/2, "q - quit!");
 	wrefresh(game);
