@@ -61,8 +61,9 @@ void main(void) {
 
 // how the title screen is displayed
 void titlescr(void) {
-	// play a cool little animation for the game title
-	printart(&title, (50-title.rows)/2, (80-title.cols)/2);
+	// show the title art with a cool
+	// little animation
+	printart(&title, 0, 0);
 
 	// and show the keys to the user,
 	// in italics just to look cooler

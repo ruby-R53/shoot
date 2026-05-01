@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include "art.h"
 #include "shoot.h"
 
 // still nothing for those, for now
@@ -131,7 +132,7 @@ void transition(void) {
 	// fill the screen so much
 	int backup[2][1000];
 	unsigned int backpos = 0;
-	// for smoothing the transition out, this will
+	// for smoothing the transition out, these will
 	// store each of y and x's positions
 
 	// initialize the RNG
@@ -259,8 +260,9 @@ void gameover(int level) {
 	transition();
 
 	// and here's the menu itself
-	mvwprintw(game, ((50 - 3) / 2), ((80 - 15) / 2), "Mission failed!");
-	mvwprintw(game, ((50 - 1) / 2), ((80 - 16) / 2), "Try again? [Y/N]");
+	printart(&over, 16, 0);
+	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02d!", level);
+	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
 	while (player.win == NULL) { // loop it
@@ -299,6 +301,7 @@ void endgame(int level) {
 	else if (level < 0) ;
 	else printf("You won, thank you for playing!\n");
 
-	// and we're done
+	// and we're done, hopefully everything went well
+	// otherwise returning 0 would be embarrassing
 	exit(0);
 }
