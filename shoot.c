@@ -251,7 +251,21 @@ void newlvl(int level) {
 		// the screen got cleared, so redraw
 		// the player too
 		movespr(player, player.y, player.x);
-	} else return;
+
+		// and finally, update the counter
+		counter(level);
+	} else
+		counter(level); // make it say "All Clear!"
+}
+
+// level counter
+void counter(int level) {
+	if (level <= LVL_MAX)
+		mvwprintw(player.hud, 1, 0, "Level: %02d", level);
+	else // you cleared the game!
+		mvwprintw(player.hud, 1, 0, "All Clear!");
+
+	wrefresh(player.hud);
 }
 
 // how the title screen is displayed

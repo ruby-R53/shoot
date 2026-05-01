@@ -38,7 +38,7 @@ void main(void) {
 	titlescr();
 
 	// and now its HUDs
-	player.hud = create_win(2, 9, (ymax+50)/2, (xmax-9)/2, false);
+	player.hud = create_win(2, 10, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 
 	keypad(game, TRUE); // support for arrow keys
@@ -64,7 +64,8 @@ int ingame(void) {
 	health(player);
 	health(enemy);
 
-	goto counter; // ugh i hate calling the same thing twice
+	// and the level display
+	counter(level);
 
 	// now, the main loop
 	while (level <= LVL_MAX) {
@@ -128,10 +129,6 @@ int ingame(void) {
 			player.win = NULL;
 			gameover(level);
 		}
-
-counter:
-		mvwprintw(player.hud, 1, 0, "Level: %02d", level);
-		wrefresh(player.hud);
 	}
 
 	// this is only executed when we win, since the loop
