@@ -251,11 +251,10 @@ void newlvl(int level) {
 		// the screen got cleared, so redraw
 		// the player too
 		movespr(player, player.y, player.x);
+	}
 
-		// and finally, update the counter
-		counter(level);
-	} else
-		counter(level); // make it say "All Clear!"
+	// and finally, update the counter
+	counter(level);
 }
 
 // level counter
