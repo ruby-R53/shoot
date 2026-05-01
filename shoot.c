@@ -254,6 +254,37 @@ void newlvl(int level) {
 	} else return;
 }
 
+// how the title screen is displayed
+void titlescr(void) {
+	// show the title art with a cool
+	// little animation
+	printart(&title, 0, 0);
+
+	// and show the keys to the user,
+	// in italics just to look cooler
+	wattron(game, A_ITALIC);
+	mvwprintw(game, 43, (80-10)/2, "Z - begin!");
+	mvwprintw(game, 44, (80-10)/2, "Q -  quit!");
+	wrefresh(game);
+	wattroff(game, A_ITALIC);
+
+	// then handle the keys
+	key = wgetch(game);
+	switch(key) {
+		case 'z':
+			transition();
+			return;
+			break;
+
+		case 'q':
+			// throw an invalid number
+			// so that it doesn't show
+			// the message
+			endgame(-1);
+			break;
+	}
+}
+
 // we lost, what's next?
 void gameover(int level) {
 	// play that cool transition tho'

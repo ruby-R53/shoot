@@ -1,10 +1,6 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include "art.h"
 #include "shoot.h"
-
-// where the game cutely initializes
-void titlescr(void);
 
 // where everything goes down
 int ingame(void);
@@ -57,37 +53,6 @@ void main(void) {
 
 	// and once the above returns, we're done
 	endgame(finish);
-}
-
-// how the title screen is displayed
-void titlescr(void) {
-	// show the title art with a cool
-	// little animation
-	printart(&title, 0, 0);
-
-	// and show the keys to the user,
-	// in italics just to look cooler
-	wattron(game, A_ITALIC);
-	mvwprintw(game, 43, (80-10)/2, "Z - begin!");
-	mvwprintw(game, 44, (80-10)/2, "Q -  quit!");
-	wrefresh(game);
-	wattroff(game, A_ITALIC);
-
-	// then handle the keys
-	key = wgetch(game);
-	switch(key) {
-		case 'z':
-			transition();
-			return;
-			break;
-
-		case 'q':
-			// throw an invalid number
-			// so that it doesn't show
-			// the message
-			endgame(-1);
-			break;
-	}
 }
 
 // and this is where the actual game happens!
