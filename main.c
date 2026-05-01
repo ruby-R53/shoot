@@ -25,7 +25,7 @@ void main(void) {
 		endwin();
 		printf("%s\n%s\n",
 				"Your terminal isn't at least 85x53 characters!",
-				"Please try resizing your window and try again.");
+				"Please resize your window and try again.");
 		exit(1);
 	}
 
@@ -81,6 +81,9 @@ void titlescr(void) {
 			break;
 
 		case 'q':
+			// throw an invalid number
+			// so that it doesn't show
+			// the message
 			endgame(-1);
 			break;
 	}

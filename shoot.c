@@ -295,7 +295,7 @@ void endgame(int level) {
 
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
-	if (level > 0) printf("Quit at level %d!\n", level);
+	if (level > 0) printf("Quit at level %d··· see you next time!\n", level);
 	else if (level < 0) ;
 	else printf("You won, thank you for playing!\n");
 
