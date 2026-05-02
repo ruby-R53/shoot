@@ -217,8 +217,6 @@ void transition(trans_t transition) {
 			box(game, 0, 0); // which means redrawing the box
 			break;
 	}
-
-	return;
 }
 
 // the enemy's movements, driven by RNG

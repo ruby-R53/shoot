@@ -111,6 +111,9 @@ void ingame(void) {
 				// if not, try again!
 				break;
 
+			case 'x': // 'x' to skip your turn!
+				break;
+
 			case 'q': // 'q' exits the game!
 				// do a little cleanup by
 				// closing the HUDs
@@ -118,6 +121,10 @@ void ingame(void) {
 				delwin(player.hud);
 				// now get back to main()
 				return;
+				break;
+
+			default:
+				continue;
 				break;
 		}
 
