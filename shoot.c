@@ -143,7 +143,7 @@ void transition(trans_t transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
 		case T_CURTAIN:
-			chtype fill[2] = { '.', ' ' };
+			const chtype fill[2] = { '.', ' ' };
 			for (int i = 0; i <= 1; ++i) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
