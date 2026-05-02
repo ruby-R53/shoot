@@ -3,7 +3,7 @@
 #include "shoot.h"
 
 // where everything goes down
-int ingame(void);
+void ingame(void);
 
 // where everything is stitched together
 // to actually work
@@ -47,25 +47,24 @@ void main(void) {
 	player.win = genspr(player); // player
 	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
 
-	// keep track of what level we left at
-	// to show the user some message
-	unsigned int finish = ingame();
+	// finally get to the game itself
+	ingame();
 
-	// and once the above returns, we're done
-	endgame(finish);
+	// and once the above is done, we
+	// are done
+	endgame();
 }
 
 // and this is where the actual game happens!
-int ingame(void) {
-	int level = 1; // start at level 1 'cos 0 sounds too nerdy (???)
-	enemy.hp  = 6; // higher than the player's but not by much
+void ingame(void) {
+	enemy.hp = 6; // higher than the player's but not by much
 
 	// show their respective HPs
 	health(player);
 	health(enemy);
 
 	// and the level display
-	counter(level);
+	counter();
 
 	// now, the main loop
 	while (level <= LVL_MAX) {
@@ -104,7 +103,8 @@ int ingame(void) {
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) {
 					enemy.win = NULL; // end the sprite
-					newlvl(++level);
+					++*lvlptr;
+					newlvl();
 					// ^ but create it again, on a different
 					// level with new stats
 				}
@@ -117,7 +117,7 @@ int ingame(void) {
 				delwin(enemy.hud);
 				delwin(player.hud);
 				// now get back to main()
-				return level;
+				return;
 				break;
 		}
 
@@ -127,11 +127,11 @@ int ingame(void) {
 		// what to do whenever the player dies
 		if (player.hp == 0) {
 			player.win = NULL;
-			gameover(level);
+			gameover();
 		}
 	}
 
-	// this is only executed when we win, since the loop
-	// actually ends when its condition is no longer met
-	return 0;
+	// when you "clear" the game, you're
+	// actually doing exactly that ;)
+	*lvlptr = 0;
 }

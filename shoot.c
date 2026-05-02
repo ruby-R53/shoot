@@ -10,6 +10,12 @@ WINDOW* game;
 // but initialize the input buffer
 int key = 0;
 
+// and the level
+int level = 1;
+int *lvlptr = &level;
+// ^ with a pointer so that it can be
+// globally updated
+
 // create a window with
 // h height,
 // w width,
@@ -123,63 +129,90 @@ void health(SPRITE spr) {
 // play a cool little transition between
 // stages and moments
 // should more kinds of it be implemented?
-void transition(void) {
+void transition(trans_t transition) {
 	int y = 0;
 	int x = 0;
-	int tick = 1000;
-	// 1k iterations seems reasonable, it doesn't
-	// take very long to happen and it doesn't
-	// fill the screen so much
-	int backup[2][1000];
-	unsigned int backpos = 0;
-	// for smoothing the transition out, these will
-	// store each of y and x's positions
 
-	// initialize the RNG
-	srandom(time(NULL));
+	switch(transition) {
+		// wipe the screen with columnfuls of dots
+		// then erase them column by column
+		case T_CURTAIN:
+			chtype fill = '.';
+			for (int i = 0; i <= 1; ++i) {
+				for (x = 1; x <= 78; ++x) {
+					for (y = 1; y <= 48; ++y)
+						mvwaddch(game, y, x, fill);
 
-	while (tick >= 0) {
-		// to choose a random spot to fill,
-		// with the walls in mind
-		y = 1 + random() % 48;
-		x = 1 + random() % 78;
+					wrefresh(game);
+					usleep(12500);
+				}
+				if (i == 0) {
+					mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
+					wrefresh(game);
+					usleep(500000);
+				}
+				fill = ' ';
+			}
+			break;
 
-		// the screen filler is a dot, like
-		// some kind of debris
-		mvwaddch(game, y, x, '.');
-		wrefresh(game);
-		usleep(500);
+		// fill the screen with dots
+		case T_DEBRIS:
+			int tick = 1000;
+			// 1k iterations seems reasonable, it doesn't
+			// take very long to happen and it doesn't
+			// fill the screen so much
+			int backup[2][1000];
+			unsigned int backpos = 0;
+			// for smoothing the transition out, these will
+			// store each of y and x's positions
 
-		// for transferring to the array
-		backpos = 1000 - tick;
+			// initialize the RNG
+			srandom(time(NULL));
 
-		// store current positions for later
-		backup[0][backpos] = y;
-		backup[1][backpos] = x;
+			while (tick >= 0) {
+				// to choose a random spot to fill,
+				// with the walls in mind
+				y = 1 + random() % 48;
+				x = 1 + random() % 78;
 
-		--tick; // one dot printed, 999 more to go
+				// the screen filler is a dot, like
+				// some kind of debris
+				mvwaddch(game, y, x, '.');
+				wrefresh(game);
+				usleep(500);
+
+				// for transferring to the array
+				backpos = 1000 - tick;
+
+				// store current positions for later
+				backup[0][backpos] = y;
+				backup[1][backpos] = x;
+
+				--tick; // one dot printed, 999 more to go
+			}
+
+			// restore the ticker for the next step,
+			// erasing each dot out
+			tick = 1000;
+
+			while (tick >= 0) {
+				// and restore the array indexer
+				backpos = 1000 - tick;
+
+				// so that we can unfill the spots back
+				mvwaddch(game, backup[0][backpos], backup[1][backpos], ' ');
+				wrefresh(game);
+				usleep(500);
+
+				--tick; // one dot removed, 999 more to go
+			}
+
+			// and finally clear the remaining mess in case
+			// any message got printed as well
+			wclear(game);
+			box(game, 0, 0); // which means redrawing the box
+			break;
 	}
-
-	// restore the ticker for the next step,
-	// erasing each dot out
-	tick = 1000;
-
-	while (tick >= 0) {
-		// and restore the array indexer
-		backpos = 1000 - tick;
-
-		// so that we can unfill the spots back
-		mvwaddch(game, backup[0][backpos], backup[1][backpos], ' ');
-		wrefresh(game);
-		usleep(500);
-
-		--tick; // one dot removed, 999 more to go
-	}
-
-	// and finally clear the remaining mess in case
-	// any message got printed as well
-	wclear(game);
-	box(game, 0, 0); // which means redrawing the box
 
 	return;
 }
@@ -226,9 +259,9 @@ void enemctrl(void) {
 }
 
 // what to do on a new level
-void newlvl(int level) {
+void newlvl(void) {
 	if (level <= LVL_MAX) {
-		transition(); // play a cool transition
+		transition(T_CURTAIN); // play a cool transition
 
 		// regenerate the enemy sprites,
 		// along with an upgraded HP
@@ -254,11 +287,11 @@ void newlvl(int level) {
 	}
 
 	// and finally, update the counter
-	counter(level);
+	counter();
 }
 
 // level counter
-void counter(int level) {
+void counter(void) {
 	if (level <= LVL_MAX)
 		mvwprintw(player.hud, 1, 0, "Level: %02d", level);
 	else // you cleared the game!
@@ -285,7 +318,7 @@ void titlescr(void) {
 	key = wgetch(game);
 	switch(key) {
 		case 'z':
-			transition();
+			transition(T_CURTAIN);
 			return;
 			break;
 
@@ -293,15 +326,16 @@ void titlescr(void) {
 			// throw an invalid number
 			// so that it doesn't show
 			// the message
-			endgame(-1);
+			*lvlptr = -1;
+			endgame();
 			break;
 	}
 }
 
 // we lost, what's next?
-void gameover(int level) {
+void gameover(void) {
 	// play that cool transition tho'
-	transition();
+	transition(T_DEBRIS);
 
 	// and here's the menu itself
 	printart(&over, 16, 0);
@@ -317,11 +351,11 @@ void gameover(int level) {
 				// new game like nothing had happened
 				player.win = genspr(player);
 				player.hp  = 4;
-				newlvl(level);
+				newlvl();
 				break;
 
 			case 'n': // or end it all
-				endgame(level);
+				endgame();
 				break;
 
 			default: // or ignore it in case if it's invalid
@@ -332,9 +366,9 @@ void gameover(int level) {
 }
 
 // end cleanup
-void endgame(int level) {
+void endgame(void) {
 	// gracefully end with a transition
-	transition();
+	transition(T_DEBRIS);
 
 	// finish curses now that the player's done
 	endwin();
