@@ -7,6 +7,8 @@
 // the most crucial window here
 extern WINDOW* game;
 
+// transition types, these are
+// all we have for now
 typedef enum trans_t {
 	T_CURTAIN,
 	T_DEBRIS

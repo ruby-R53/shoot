@@ -146,16 +146,21 @@ void transition(trans_t transition) {
 					wrefresh(game);
 					usleep(12500);
 				}
+				// also stop to show a "get ready"
+				// kind of message, making sure the
+				// background is still all dots
 				if (i == 0) {
 					mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
 					wrefresh(game);
-					usleep(500000);
+					usleep(500000); // for .5 seconds
 				}
+				// THEN change the filler to be
+				// nothing, a.k.a. a space
 				fill = ' ';
 			}
 			break;
 
-		// fill the screen with dots
+		// or fill the screen with dots
 		case T_DEBRIS:
 			int tick = 1000;
 			// 1k iterations seems reasonable, it doesn't
