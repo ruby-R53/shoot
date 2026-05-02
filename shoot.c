@@ -144,7 +144,9 @@ void transition(trans_t transition) {
 						mvwaddch(game, y, x, fill[i]);
 
 					wrefresh(game);
-					usleep(12500);
+					// so that it immediately gets
+					// to the next part
+					if (x < 78) usleep(10000);
 				}
 				// also stop to show a "get ready"
 				// kind of message, making sure the
