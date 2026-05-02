@@ -60,11 +60,17 @@ void movespr(SPRITE spr, int y, int x) {
 // where we're shooting from and where the
 // opponent is
 int shoot(SPRITE src, SPRITE dst) {
-	// use src's coordinates as the base
-	bullet.y = src.y;
-	bullet.x = src.x + getmaxx(src.win) / 2;
-	// ^ the sprite's horizontal center, this is where
-	// bullets will always get shot out from
+	// account the hitboxes for their
+	// locations on screen
+	src.hit[0] += src.y;
+	src.hit[1] += src.x;
+	dst.hit[0] += dst.y;
+	dst.hit[1] += dst.x;
+
+	// use src's hitbox as the base
+	// since it's that tiny
+	bullet.y = src.hit[0];
+	bullet.x = src.hit[1];
 
 	// spawn the bullet already
 	bullet.win = genspr(bullet);
@@ -82,8 +88,8 @@ int shoot(SPRITE src, SPRITE dst) {
 		// if our target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
 		if (dst.hp != 0 &&
-			bullet.y == dst.y &&
-			bullet.x == (dst.x+2)) {
+			bullet.y == dst.hit[0] &&
+			bullet.x == dst.hit[1]) {
 			--dst.hp;
 			health(dst);
 			if (dst.hp == 0) kill(dst);
@@ -92,7 +98,7 @@ int shoot(SPRITE src, SPRITE dst) {
 			// something before the wall tho'
 		}
 
-		usleep(5000);
+		usleep(5000); // and move it every .005 secs
 	}
 
 cleanup:
@@ -165,6 +171,7 @@ void transition(trans_t transition) {
 			// 1k iterations seems reasonable, it doesn't
 			// take very long to happen and it doesn't
 			// fill the screen so much
+
 			int backup[2][1000];
 			unsigned int backpos = 0;
 			// for smoothing the transition out, these will
@@ -256,8 +263,6 @@ void enemctrl(void) {
 			if (enemy.x <= 73) movespr(enemy, enemy.y, ++enemy.x);
 			break;
 	}
-
-	return;
 }
 
 // what to do on a new level
