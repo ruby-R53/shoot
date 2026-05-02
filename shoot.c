@@ -137,11 +137,11 @@ void transition(trans_t transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
 		case T_CURTAIN:
-			chtype fill = '.';
+			chtype fill[2] = { '.', ' ' };
 			for (int i = 0; i <= 1; ++i) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
-						mvwaddch(game, y, x, fill);
+						mvwaddch(game, y, x, fill[i]);
 
 					wrefresh(game);
 					usleep(12500);
@@ -154,9 +154,6 @@ void transition(trans_t transition) {
 					wrefresh(game);
 					usleep(500000); // for .5 seconds
 				}
-				// THEN change the filler to be
-				// nothing, a.k.a. a space
-				fill = ' ';
 			}
 			break;
 
