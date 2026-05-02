@@ -103,9 +103,9 @@ void ingame(void) {
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) {
 					enemy.win = NULL; // end the sprite
-					++*lvlptr;
+					++*lvlptr; // raise the current level
 					newlvl();
-					// ^ but create it again, on a different
+					// ^ and create it again, on a different
 					// level with new stats
 				}
 				// if not, try again!
