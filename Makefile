@@ -7,9 +7,9 @@ SRCES = art.c shoot.c sprites.c main.c
 
 # and put this all together
 all:
-	gcc $(FLAGS) $(SRCES) -o shoot
+	gcc $(SRCES) -o shoot $(FLAGS)
 
 # additionally you can easily make
 # debug builds instead
 dbg:
-	gcc $(FLAGS) -fsanitize=address -g $(SRCES) -o shoot
+	gcc -fsanitize=address -g $(SRCES) -o shoot $(FLAGS)
