@@ -48,14 +48,13 @@ WINDOW* newspr(SPRITE chr) {
 // move it
 void mvspr(SPRITE spr, int y, int x) {
 	werase(spr.win); // first, delete its trail
-	touchwin(game); // but the parent window must be made aware of that
 	mvderwin(spr.win, y, x); // before its derived one (the sprite) can actually move
 
 	// now actually show the thing at its specific
 	// coordinates
 	wprintw(spr.win, "%s", spr.skin);
-	wnoutrefresh(spr.win);
-	doupdate();
+	touchline(game, y, spr.h); // but the parent window must be made aware of that
+	wrefresh(game); // then actually update everything
 }
 
 // what the game is about, we need to specify
@@ -85,7 +84,6 @@ int shoot(SPRITE src, SPRITE dst) {
 	// who's shooting!
 	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
 		mvspr(bullet, bullet.y, bullet.x);
-		wrefresh(game);
 
 		// if the target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
