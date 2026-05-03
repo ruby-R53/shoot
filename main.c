@@ -25,7 +25,6 @@ void main(void) {
 		exit(1);
 	}
 
-	nodelay(game, TRUE); // to make wgetch() non-blocking
 	noecho(); // do NOT show the user's keystrokes here
 	curs_set(0); // nor the cursor, this is a game after all
 	raw(); // and don't do any input buffering
@@ -40,8 +39,6 @@ void main(void) {
 	// and now its HUDs
 	player.hud = create_win(2, 10, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
-
-	keypad(game, TRUE); // support for arrow keys
 
 	// create sprites for the
 	player.win = genspr(player); // player
@@ -66,6 +63,7 @@ void ingame(void) {
 	// and the level display
 	counter();
 
+	keypad(game, TRUE); // support for arrow keys
 	// now, the main loop
 	while (level <= LVL_MAX) {
 		key = wgetch(game);
@@ -73,22 +71,22 @@ void ingame(void) {
 			// yes, you can use Vim keys here
 			case KEY_UP:
 			case 'k':
-				if (player.y >= 2) movespr(player, --player.y, player.x);
+				if (player.y >= 2) --player.y;
 				break;
 
 			case KEY_DOWN:
 			case 'j':
-				if (player.y <= 47) movespr(player, ++player.y, player.x);
+				if (player.y <= 47) ++player.y;
 				break;
 
 			case KEY_LEFT:
 			case 'h':
-				if (player.x >= 2) movespr(player, player.y, --player.x);
+				if (player.x >= 2) --player.x;
 				break;
 
 			case KEY_RIGHT:
 			case 'l':
-				if (player.x <= 73) movespr(player, player.y, ++player.x);
+				if (player.x <= 73) ++player.x;
 				break;
 
 			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X), so
@@ -127,6 +125,9 @@ void ingame(void) {
 				continue;
 				break;
 		}
+
+		// then, update the sprite
+		movespr(player, player.y, player.x);
 
 		// it's the enemy's turn!
 		enemctrl();

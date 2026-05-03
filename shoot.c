@@ -98,11 +98,11 @@ int shoot(SPRITE src, SPRITE dst) {
 			// something before the wall tho'
 		}
 
-		usleep(5000); // and move it every .005 secs
+		flushinp(); // discard any input so that the game doesn't lag
+		napms(5); // and move it every .005 secs
 	}
 
 cleanup:
-	movespr(src, src.y, src.x);
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
@@ -122,19 +122,18 @@ void kill(SPRITE spr) {
 // health status for each sprite
 void health(SPRITE spr) {
 	if (spr.hp == 0) { // show a message to the player
-		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 7) / 2), "Killed!");
+		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud)-7)/2), "Killed!");
 		wrefresh(spr.hud);
-		usleep(125000); // for .125 seconds
+		napms(125); // for .125 seconds
 		werase(spr.hud);
 	} else // pad it with zeros, i want it to be higher at a later point
-		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 6) / 2), "HP: %02d", spr.hp);
+		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud)-6)/2), "HP: %02d", spr.hp);
 
 	wrefresh(spr.hud);
 }
 
 // play a cool little transition between
 // stages and moments
-// should more kinds of it be implemented?
 void transition(trans_t transition) {
 	int y = 0;
 	int x = 0;
@@ -152,25 +151,26 @@ void transition(trans_t transition) {
 					wrefresh(game);
 					// so that it immediately gets
 					// to the next part
-					if (x < 78) usleep(10000);
+					if (x < 78) napms(10);
 				}
-				// also stop to show a "get ready"
-				// kind of message, making sure the
+				// stop to show a "get ready" kind
+				// of message, making sure the
 				// background is still all dots
 				if (i == 0) {
 					mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
 					wrefresh(game);
-					usleep(500000); // for .5 seconds
+					napms(500); // for .5 seconds
 				}
 			}
 			break;
 
-		// or fill the screen with dots
+		// or fill the screen with dots, clearing
+		// them out one by one later
 		case T_DEBRIS:
-			int tick = 1000;
-			// 1k iterations seems reasonable, it doesn't
-			// take very long to happen and it doesn't
-			// fill the screen so much
+			int tick = 2000;
+			// 1k iterations (for each) seems reasonable,
+			// it doesn't take very long to happen and it
+			// doesn't fill the screen so much
 
 			int backup[2][1000];
 			unsigned int backpos = 0;
@@ -180,8 +180,9 @@ void transition(trans_t transition) {
 			// initialize the RNG
 			srandom(time(NULL));
 
-			while (tick >= 0) {
-				// to choose a random spot to fill,
+			// first part, fill
+			while (tick >= 1000) {
+				// choose a random spot to fill,
 				// with the walls in mind
 				y = 1 + random() % 48;
 				x = 1 + random() % 78;
@@ -190,22 +191,21 @@ void transition(trans_t transition) {
 				// some kind of debris
 				mvwaddch(game, y, x, '.');
 				wrefresh(game);
-				usleep(500);
+				usleep(500); // .5 milliseconds for each
 
-				// for transferring to the array
-				backpos = 1000 - tick;
+				// transfer current iteration to the
+				// array
+				backpos = 2000 - tick;
 
-				// store current positions for later
+				// and store current positions for
+				// later
 				backup[0][backpos] = y;
 				backup[1][backpos] = x;
 
 				--tick; // one dot printed, 999 more to go
 			}
 
-			// restore the ticker for the next step,
-			// erasing each dot out
-			tick = 1000;
-
+			// second part, unfill
 			while (tick >= 0) {
 				// and restore the array indexer
 				backpos = 1000 - tick;
@@ -248,21 +248,24 @@ void enemctrl(void) {
 			break;
 
 		case MV_UP:
-			if (enemy.y >= 2) movespr(enemy, --enemy.y, enemy.x);
+			if (enemy.y >= 2) --enemy.y;
 			break;
 
 		case MV_DOWN:
-			if (enemy.y <= 47) movespr(enemy, ++enemy.y, enemy.x);
+			if (enemy.y <= 47) ++enemy.y;
 			break;
 
 		case MV_LEFT:
-			if (enemy.x >= 2) movespr(enemy, enemy.y, --enemy.x);
+			if (enemy.x >= 2) --enemy.x;
 			break;
 
 		case MV_RIGHT:
-			if (enemy.x <= 73) movespr(enemy, enemy.y, ++enemy.x);
+			if (enemy.x <= 73) ++enemy.x;
 			break;
 	}
+
+	// and finally, update the sprite
+	movespr(enemy, enemy.y, enemy.x);
 }
 
 // what to do on a new level
@@ -322,20 +325,21 @@ void titlescr(void) {
 	wattroff(game, A_ITALIC);
 
 	// then handle the keys
-	key = wgetch(game);
-	switch(key) {
-		case 'z':
-			transition(T_CURTAIN);
-			return;
-			break;
+	while ((key = wgetch(game))) {
+		switch(key) {
+			case 'z':
+				transition(T_CURTAIN);
+				return;
+				break;
 
-		case 'q':
-			// throw an invalid number
-			// so that it doesn't show
-			// the message
-			*lvlptr = -1;
-			endgame();
-			break;
+			case 'q':
+				// throw an invalid number
+				// so that it doesn't show
+				// the message
+				*lvlptr = -1;
+				endgame();
+				break;
+		}
 	}
 }
 
