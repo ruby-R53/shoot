@@ -1,6 +1,6 @@
 #include "sprites.h"
 
-// these parameters are all passed to `genspr()`, however
+// these parameters are all passed to `newspr()`, however
 // FIXME should there be a way to calculate the sprites'
 // sizes rather than hand-typing them?
 

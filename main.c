@@ -41,8 +41,8 @@ void main(void) {
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 
 	// create sprites for the
-	player.win = genspr(player); // player
-	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
+	player.win = newspr(player); // player
+	enemy.win  = newspr(enemy); // and opponent, yet to be further programmed
 
 	// finally get to the game itself
 	ingame();
@@ -127,7 +127,7 @@ void ingame(void) {
 		}
 
 		// then, update the sprite
-		movespr(player, player.y, player.x);
+		mvspr(player, player.y, player.x);
 
 		// it's the enemy's turn!
 		enemctrl();

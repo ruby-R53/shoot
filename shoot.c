@@ -18,8 +18,7 @@ int *lvlptr = &level;
 
 // create a window with
 // h height,
-// w width,
-// at
+// w width, at
 // y location,
 // and x location,
 // with or without border!
@@ -33,7 +32,7 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 }
 
 // generate sprite from character data
-WINDOW* genspr(SPRITE chr) {
+WINDOW* newspr(SPRITE chr) {
 	WINDOW* spr;
 	// make it a derived windows so that ncurses understands it
 	spr = derwin(game, chr.h, chr.w, chr.y, chr.x);
@@ -44,7 +43,7 @@ WINDOW* genspr(SPRITE chr) {
 }
 
 // move it
-void movespr(SPRITE spr, int y, int x) {
+void mvspr(SPRITE spr, int y, int x) {
 	werase(spr.win); // first, delete its trail
 	touchwin(game); // but the parent window must be made aware of that
 	mvderwin(spr.win, y, x); // before its derived one (the sprite) can actually move
@@ -73,7 +72,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	bullet.x = src.hit[1];
 
 	// spawn the bullet already
-	bullet.win = genspr(bullet);
+	bullet.win = newspr(bullet);
 
 	// check if the enemy is shooting to flip the
 	// bullet's direction, otherwise don't do anything
@@ -82,7 +81,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	// move that bullet thing or down, depending on
 	// who's shooting!
 	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
-		movespr(bullet, bullet.y, bullet.x);
+		mvspr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
 
 		// if our target (dst) is around, check if the bullet
@@ -106,7 +105,7 @@ cleanup:
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
-	if (dst.hp > 0) movespr(dst, dst.y, dst.x);
+	if (dst.hp > 0) mvspr(dst, dst.y, dst.x);
 	// ^ and redraw the thing in case it got hit but is still alive
 
 	return dst.hp; // and that will be kept track of in `main()`
@@ -265,7 +264,7 @@ void enemctrl(void) {
 	}
 
 	// and finally, update the sprite
-	movespr(enemy, enemy.y, enemy.x);
+	mvspr(enemy, enemy.y, enemy.x);
 }
 
 // what to do on a new level
@@ -281,7 +280,7 @@ void newlvl(void) {
 		enemy.x   = enemy.w / 2 + random() % (80-enemy.w) + 1;
 		// ^ use the sprite's boundaries as padding
 		enemy.hp  = level + 5;
-		enemy.win = genspr(enemy);
+		enemy.win = newspr(enemy);
 
 		// and +1 the player's HP at
 		// every 2 levels
@@ -294,7 +293,7 @@ void newlvl(void) {
 		// because of the transition animation,
 		// the screen got cleared, so redraw
 		// the player too
-		movespr(player, player.y, player.x);
+		mvspr(player, player.y, player.x);
 	}
 
 	// and finally, update the counter
@@ -361,7 +360,7 @@ void gameover(void) {
 			case 'y':
 				// just restore the stats and start a
 				// new game like nothing had happened
-				player.win = genspr(player);
+				player.win = newspr(player);
 				player.hp  = 4;
 				newlvl();
 				break;
