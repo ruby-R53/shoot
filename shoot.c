@@ -98,8 +98,8 @@ int shoot(SPRITE src, SPRITE dst) {
 			// something before the wall tho'
 		}
 
-		flushinp(); // discard any input so that the game doesn't lag
 		napms(5); // and move it every .005 secs
+		flushinp(); // discard any input so that the game doesn't lag
 	}
 
 cleanup:
