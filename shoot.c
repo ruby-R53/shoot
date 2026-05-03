@@ -21,24 +21,27 @@ int *lvlptr = &level;
 // w width, at
 // y location,
 // and x location,
-// with or without border!
+// with or without a border!
 WINDOW* create_win(int h, int w, int y, int x, bool border) {
 	WINDOW* win;
 	win = newwin(h, w, y, x);
 	if (border) box(win, 0, 0);
 	wrefresh(win); // and show it
 
+	// and finally return it to the
+	// variable it belongs to
 	return win;
 }
 
 // generate sprite from character data
 WINDOW* newspr(SPRITE chr) {
 	WINDOW* spr;
-	// make it a derived windows so that ncurses understands it
+	// make it a derived window so that ncurses understands it
 	spr = derwin(game, chr.h, chr.w, chr.y, chr.x);
 	wprintw(spr, "%s", chr.skin);
 	wrefresh(spr); // and show it
 
+	// ditto
 	return spr;
 }
 
@@ -84,7 +87,7 @@ int shoot(SPRITE src, SPRITE dst) {
 		mvspr(bullet, bullet.y, bullet.x);
 		wrefresh(game);
 
-		// if our target (dst) is around, check if the bullet
+		// if the target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
 		if (dst.hp != 0 &&
 			bullet.y == dst.hit[0] &&
@@ -115,7 +118,7 @@ cleanup:
 void kill(SPRITE spr) {
 	werase(spr.win); // erase the target
 	wrefresh(spr.win);
-	delwin(spr.win); // make curses now the target is dead
+	delwin(spr.win); // make curses know the target is dead
 }
 
 // health status for each sprite
