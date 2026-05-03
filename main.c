@@ -25,13 +25,13 @@ void main(void) {
 		exit(1);
 	}
 
-	nodelay(game, TRUE); // to make wgetch() non-blocking
 	noecho(); // do NOT show the user's keystrokes here
 	curs_set(0); // nor the cursor, this is a game after all
 	raw(); // and don't do any input buffering
 
 	// finally, render where the
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
+	nodelay(game, TRUE); // to make wgetch() non-blocking
 
 	// which's where we'll first show the title screen
 	// for a cool little boot
@@ -43,10 +43,6 @@ void main(void) {
 
 	keypad(game, TRUE); // support for arrow keys
 
-	// create sprites for the
-	player.win = genspr(player); // player
-	enemy.win  = genspr(enemy); // and opponent, yet to be further programmed
-
 	// finally get to the game itself
 	ingame();
 
@@ -55,13 +51,29 @@ void main(void) {
 	endgame();
 }
 
+void render_sprite(SPRITE spr) {
+	mvwprintw(game, spr.y, spr.x, "%s", spr.skin);
+}
+
+void render() {
+	werase(game);
+
+	render_sprite(player);
+	render_sprite(enemy);
+	if (isshooting)
+		render_sprite(bullet);
+	
+	box(game, 0, 0); // box has to be redrawn after window is cleared
+	doupdate();
+}
+
 // and this is where the actual game happens!
 void ingame(void) {
 	enemy.hp = 6; // higher than the player's but not by much
 
 	// show their respective HPs
-	health(player);
-	health(enemy);
+	health(&player);
+	health(&enemy);
 
 	// and the level display
 	counter();
@@ -73,45 +85,43 @@ void ingame(void) {
 			// yes, you can use Vim keys here
 			case KEY_UP:
 			case 'k':
-				if (player.y >= 2) movespr(player, --player.y, player.x);
+				if (isplayersturn && !isshooting && player.y >= 2) --player.y;
+				isplayersturn = false;
 				break;
 
 			case KEY_DOWN:
 			case 'j':
-				if (player.y <= 47) movespr(player, ++player.y, player.x);
+				if (isplayersturn && !isshooting && player.y <= 47) ++player.y;
+				isplayersturn = false;
 				break;
 
 			case KEY_LEFT:
 			case 'h':
-				if (player.x >= 2) movespr(player, player.y, --player.x);
+				if (isplayersturn && !isshooting && player.x >= 2) --player.x;
+				isplayersturn = false;
 				break;
 
 			case KEY_RIGHT:
 			case 'l':
-				if (player.x <= 73) movespr(player, player.y, ++player.x);
+				if (isplayersturn && !isshooting && player.x <= 73) ++player.x;
+				isplayersturn = false;
 				break;
 
 			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X), so
 			// that they don't straight-up get thru the walls here
 
 			case 'z': // 'z' for shooting!
-				if (player.y > 2) // but why would you shoot the wall brah
+				if (isplayersturn && !isshooting && player.y > 2) { // but why would you shoot the wall brah
 					// this function not only shoots but also kills, so
 					// the enemy's HP is tracked here as well
-					enemy.hp = shoot(player, enemy);
-
-				// if we killed our opponent···
-				if (enemy.hp == 0 && enemy.win != NULL) {
-					enemy.win = NULL; // end the sprite
-					++*lvlptr; // raise the current level
-					newlvl();
-					// ^ and create it again, on a different
-					// level with new stats
+					shootbullet(&player, &enemy);
 				}
-				// if not, try again!
+				
+				isplayersturn = false;
 				break;
 
 			case 'x': // 'x' to skip your turn!
+				isplayersturn = false;
 				break;
 
 			case 'q': // 'q' exits the game!
@@ -124,16 +134,22 @@ void ingame(void) {
 				break;
 
 			default:
-				continue;
 				break;
 		}
 
 		// it's the enemy's turn!
-		enemctrl();
+		if (!isplayersturn) {
+			enemctrl();
+			isplayersturn = true;
+		}
+
+		if (isshooting)
+			movebullet();
+
+		render();
 
 		// what to do whenever the player dies
 		if (player.hp == 0) {
-			player.win = NULL;
 			gameover();
 		}
 	}

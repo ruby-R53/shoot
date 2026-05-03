@@ -11,10 +11,16 @@ WINDOW* game;
 int key = 0;
 
 // and the level
+bool isplayersturn = true;
 int level = 1;
 int *lvlptr = &level;
 // ^ with a pointer so that it can be
 // globally updated
+
+// shooting variables
+bool isshooting = false;
+SPRITE* shotsrc;
+SPRITE* shotdst;
 
 // create a window with
 // h height,
@@ -32,104 +38,81 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 	return win;
 }
 
-// generate sprite from character data
-WINDOW* genspr(SPRITE chr) {
-	WINDOW* spr;
-	// make it a derived windows so that ncurses understands it
-	spr = derwin(game, chr.h, chr.w, chr.y, chr.x);
-	wprintw(spr, "%s", chr.skin);
-	wrefresh(spr); // and show it
-
-	return spr;
-}
-
-// move it
-void movespr(SPRITE spr, int y, int x) {
-	werase(spr.win); // first, delete its trail
-	touchwin(game); // but the parent window must be made aware of that
-	mvderwin(spr.win, y, x); // before its derived one (the sprite) can actually move
-
-	// now actually show the thing at its specific
-	// coordinates
-	wprintw(spr.win, "%s", spr.skin);
-	wnoutrefresh(spr.win);
-	doupdate();
-}
-
-// what the game is about, we need to specify
-// where we're shooting from and where the
-// opponent is
-int shoot(SPRITE src, SPRITE dst) {
-	// account the hitboxes for their
-	// locations on screen
-	src.hit[0] += src.y;
-	src.hit[1] += src.x;
-	dst.hit[0] += dst.y;
-	dst.hit[1] += dst.x;
+// fires a bullet
+void shootbullet(SPRITE* src, SPRITE* dst) {
+	isshooting = true;
+	shotsrc = src;
+	shotdst = dst;
 
 	// use src's hitbox as the base
 	// since it's that tiny
-	bullet.y = src.hit[0];
-	bullet.x = src.hit[1];
+	bullet.y = shotsrc->hit[0] + shotsrc->y;
+	bullet.x = shotsrc->hit[1] + shotsrc->x;
+}
 
-	// spawn the bullet already
-	bullet.win = genspr(bullet);
-
+// move a bullet while it's being fired
+int movebullet() {
 	// check if the enemy is shooting to flip the
 	// bullet's direction, otherwise don't do anything
-	bool flip = (src.win == player.win) ? false : true;
+	bool flip = (shotsrc == &player) ? false : true;
 
 	// move that bullet thing or down, depending on
 	// who's shooting!
-	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
-		movespr(bullet, bullet.y, bullet.x);
-		wrefresh(game);
+	if (bullet.y <= 48 && bullet.y >= 1) {
+		if (flip) {
+			++bullet.y;
+		} else {
+			--bullet.y;
+		}
 
 		// if our target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
-		if (dst.hp != 0 &&
-			bullet.y == dst.hit[0] &&
-			bullet.x == dst.hit[1]) {
-			--dst.hp;
-			health(dst);
-			if (dst.hp == 0) kill(dst);
-			goto cleanup;
-			// it makes sense that it disappears after hitting
-			// something before the wall tho'
-		}
+		if (shotdst->hp != 0 &&
+			bullet.y == shotdst->hit[0] + shotdst->y &&
+			bullet.x == shotdst->hit[1] + shotdst->x) {
+			--(shotdst->hp);
+			health(shotdst);
 
-		usleep(5000); // and move it every .005 secs
+			// if target is killed
+			if (shotdst->hp == 0) {
+				kill(shotdst);
+
+				// only advance if the player wasn't killed
+				if (shotsrc == &player) {
+					++*lvlptr; // raise the current level
+					newlvl(); // go to the next level
+				}
+			}
+
+			isshooting = false;
+			return shotdst->hp; // and that will be kept track of in `main()`;
+		}
+	} else {
+		isshooting = false;
 	}
 
-cleanup:
-	movespr(src, src.y, src.x);
-	werase(bullet.win); // make it disappear!
-	wrefresh(bullet.win);
-	delwin(bullet.win); // let curses know it disappeared!
-	if (dst.hp > 0) movespr(dst, dst.y, dst.x);
-	// ^ and redraw the thing in case it got hit but is still alive
-
-	return dst.hp; // and that will be kept track of in `main()`
+	napms(5); // and move it every .005 secs
+	return shotdst->hp; // and that will be kept track of in `main()`;
+	// it makes sense that it disappears after hitting
+	// something before the wall tho'
 }
 
-// if someone got killed, make ncurses actually kill them too
-void kill(SPRITE spr) {
-	werase(spr.win); // erase the target
-	wrefresh(spr.win);
-	delwin(spr.win); // make curses now the target is dead
+// TODO: implement this when necessary
+void kill(SPRITE* spr) {
+	;
 }
 
 // health status for each sprite
-void health(SPRITE spr) {
-	if (spr.hp == 0) { // show a message to the player
-		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 7) / 2), "Killed!");
-		wrefresh(spr.hud);
-		usleep(125000); // for .125 seconds
-		werase(spr.hud);
+void health(SPRITE* spr) {
+	if (spr->hp == 0) { // show a message to the player
+		mvwprintw(spr->hud, 0, ((getmaxx(spr->hud) - 7) / 2), "Killed!");
+		wrefresh(spr->hud);
+		napms(125); // for .125 seconds
+		werase(spr->hud);
 	} else // pad it with zeros, i want it to be higher at a later point
-		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud) - 6) / 2), "HP: %02d", spr.hp);
+		mvwprintw(spr->hud, 0, ((getmaxx(spr->hud) - 6) / 2), "HP: %02d", spr->hp);
 
-	wrefresh(spr.hud);
+	wrefresh(spr->hud);
 }
 
 // play a cool little transition between
@@ -244,23 +227,23 @@ void enemctrl(void) {
 	// moving to the same direction over and over
 	switch(move) {
 		case MV_SHOOT:
-			if (enemy.y < 48) player.hp = shoot(enemy, player);
+			if (!isshooting && enemy.y < 48) shootbullet(&enemy, &player);
 			break;
 
 		case MV_UP:
-			if (enemy.y >= 2) movespr(enemy, --enemy.y, enemy.x);
+			if (!isshooting && enemy.y >= 2) --enemy.y;
 			break;
 
 		case MV_DOWN:
-			if (enemy.y <= 47) movespr(enemy, ++enemy.y, enemy.x);
+			if (!isshooting && enemy.y <= 47) ++enemy.y;
 			break;
 
 		case MV_LEFT:
-			if (enemy.x >= 2) movespr(enemy, enemy.y, --enemy.x);
+			if (!isshooting && enemy.x >= 2) --enemy.x;
 			break;
 
 		case MV_RIGHT:
-			if (enemy.x <= 73) movespr(enemy, enemy.y, ++enemy.x);
+			if (!isshooting && enemy.x <= 73) ++enemy.x;
 			break;
 	}
 }
@@ -277,20 +260,14 @@ void newlvl(void) {
 		enemy.y   = 2 + random() % 45;
 		enemy.x   = 2 + random() % 73;
 		enemy.hp  = level + 5;
-		enemy.win = genspr(enemy);
 
 		// and +1 the player's HP at
 		// every 2 levels
 		player.hp += level % 2;
 
 		// display both health meters
-		health(enemy);
-		health(player);
-
-		// because of the transition animation,
-		// the screen got cleared, so redraw
-		// the player too
-		movespr(player, player.y, player.x);
+		health(&enemy);
+		health(&player);
 	}
 
 	// and finally, update the counter
@@ -322,20 +299,22 @@ void titlescr(void) {
 	wattroff(game, A_ITALIC);
 
 	// then handle the keys
-	key = wgetch(game);
-	switch(key) {
-		case 'z':
-			transition(T_CURTAIN);
-			return;
-			break;
+	while (true) {
+		key = wgetch(game);
+		switch(key) {
+			case 'z':
+				transition(T_CURTAIN);
+				return;
+				break;
 
-		case 'q':
-			// throw an invalid number
-			// so that it doesn't show
-			// the message
-			*lvlptr = -1;
-			endgame();
-			break;
+			case 'q':
+				// throw an invalid number
+				// so that it doesn't show
+				// the message
+				*lvlptr = -1;
+				endgame();
+				break;
+		}
 	}
 }
 
@@ -350,19 +329,20 @@ void gameover(void) {
 	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
-	while (player.win == NULL) { // loop it
+	while (true) {
 		key = wgetch(game);
 		switch(key) {
 			case 'y':
 				// just restore the stats and start a
 				// new game like nothing had happened
-				player.win = genspr(player);
 				player.hp  = 4;
 				newlvl();
+				return;
 				break;
 
 			case 'n': // or end it all
 				endgame();
+				return;
 				break;
 
 			default: // or ignore it in case if it's invalid

@@ -7,7 +7,6 @@ typedef struct SPRITE {
 	unsigned int hp; // health
 	unsigned int hit[2]; // hitbox (0: y, 1: x)
 	const char* skin; // and how it looks like
-	WINDOW* win; // and where it's from
 	WINDOW* hud; // and its own HUD
 } SPRITE;
 

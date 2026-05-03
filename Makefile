@@ -12,4 +12,4 @@ all:
 # additionally you can easily make
 # debug builds instead
 dbg:
-	gcc -fsanitize=address -g $(SRCES) -o shoot $(FLAGS)
+	gcc -g $(SRCES) -o shoot $(FLAGS)

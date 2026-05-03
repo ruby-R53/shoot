@@ -17,18 +17,23 @@ typedef enum trans_t {
 // generic input buffer for wgetch()
 extern int key;
 
-// starting level
+// game variables
+extern bool	isplayersturn;
 extern int  level;
 extern int* lvlptr;
 // ^ and its pointer
 
+// bullet shooting variables
+extern bool isshooting;
+extern SPRITE* shotsrc;
+extern SPRITE* shotdst;
+
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
-extern WINDOW* genspr(SPRITE chr);
-extern void movespr(SPRITE spr, int y, int x);
-extern int  shoot(SPRITE src, SPRITE dst);
-extern void kill(SPRITE spr);
-extern void health(SPRITE spr);
+extern void	shootbullet(SPRITE* src, SPRITE* dst);
+extern int  movebullet();
+extern void kill(SPRITE* spr);
+extern void health(SPRITE* spr);
 extern void transition(trans_t transition);
 
 // still part of it, but a little more specific
