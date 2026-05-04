@@ -11,8 +11,8 @@ WINDOW* game;
 int key = 0;
 
 // and the level
-int level = 1;
-int *lvlptr = &level;
+int  level  = 1;
+int* lvlptr = &level;
 // ^ with a pointer so that it can be
 // globally updated
 

@@ -24,7 +24,7 @@ extern int* lvlptr;
 
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
-extern WINDOW* newspr(SPRITE chr);
+extern WINDOW* newspr(SPRITE spr);
 extern void mvspr(SPRITE spr, int y, int x);
 extern int  shoot(SPRITE src, SPRITE dst);
 extern void kill(SPRITE spr);
