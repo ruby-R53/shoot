@@ -36,15 +36,15 @@ void main(void) {
 	// for a cool little boot
 	titlescr();
 
-	// and now its HUDs
+	// and now the HUDs, just a little below the main window
 	player.hud = create_win(2, 10, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 
 	// create sprites for the
 	player.win = newspr(player); // player
-	enemy.win  = newspr(enemy); // and opponent, yet to be further programmed
+	enemy.win  = newspr(enemy); // and opponent
 
-	// finally get to the game itself
+	// then get to the game itself
 	ingame();
 
 	// and once the above is done, we
@@ -52,7 +52,7 @@ void main(void) {
 	endgame();
 }
 
-// and this is where the actual game happens!
+// where the actual game happens
 void ingame(void) {
 	enemy.hp = 6; // higher than the player's but not by much
 
@@ -129,7 +129,7 @@ void ingame(void) {
 		// then, update the sprite
 		mvspr(player, player.y, player.x);
 
-		// it's the enemy's turn!
+		// and now it's the enemy's turn!
 		enemctrl();
 
 		// what to do whenever the player dies

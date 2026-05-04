@@ -278,7 +278,7 @@ void newlvl(void) {
 		// and new positions
 		srandom(time(NULL));
 		enemy.y   = enemy.h + random() % 45 + 1;
-		enemy.x   = enemy.w / 2 + random() % (80-enemy.w) + 1;
+		enemy.x   = enemy.w / 2 + random() % (79-enemy.w) + 1;
 		// ^ use the sprite's boundaries as padding
 		enemy.hp  = level + 5;
 		enemy.win = newspr(enemy);
