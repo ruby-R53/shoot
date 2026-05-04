@@ -34,14 +34,14 @@ WINDOW* create_win(int h, int w, int y, int x, bool border) {
 }
 
 // generate sprite from character data
-WINDOW* newspr(SPRITE chr) {
+WINDOW* newspr(SPRITE spr) {
 	// make it a derived window so that ncurses understands it
-	chr.win = derwin(game, chr.h, chr.w, chr.y, chr.x);
-	wprintw(chr.win, "%s", chr.skin);
-	wrefresh(chr.win); // and show it
+	spr.win = derwin(game, spr.h, spr.w, spr.y, spr.x);
+	wprintw(spr.win, "%s", spr.skin);
+	wrefresh(spr.win); // and show it
 
 	// ditto
-	return chr.win;
+	return spr.win;
 }
 
 // move it
