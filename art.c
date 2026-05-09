@@ -30,6 +30,21 @@ ART over = {
 	.cols = 58
 };
 
+// and the ending one!
+ART won = {
+	.art = {
+		"#     #                 #     #               ###",
+		" #   #  ####  #    #    #  #  #  ####  #    # ###",
+		"  # #  #    # #    #    #  #  # #    # ##   # ###",
+		"   #   #    # #    #    #  #  # #    # # #  #  # ",
+		"   #   #    # #    #    #  #  # #    # #  # #    ",
+		"   #   #    # #    #    #  #  # #    # #   ## ###",
+		"   #    ####   ####      ## ##   ####  #    # ###",
+	},
+	.rows = 7,
+	.cols = 49
+};
+
 // and a function for how they'll be displayed
 void printart(ART* art, int y, int x) {
 	// default position: the game window's center

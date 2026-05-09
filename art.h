@@ -10,3 +10,4 @@ extern void printart(ART* art, int y, int x);
 
 extern ART title;
 extern ART over;
+extern ART won;

@@ -142,4 +142,5 @@ void ingame(void) {
 	// when you "clear" the game, you're
 	// actually doing exactly that ;)
 	*lvlptr = 0;
+	ending();
 }

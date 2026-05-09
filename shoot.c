@@ -156,7 +156,12 @@ void transition(trans_t transition) {
 				// of message, making sure the
 				// background is still all dots
 				if (i == 0) {
-					mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
+					if (level != 0) {
+						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
+					}
+					else {
+						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
+					}
 					wrefresh(game);
 					napms(500); // for .5 seconds
 				}
@@ -376,12 +381,28 @@ void gameover(void) {
 	}
 }
 
+// when the game is finally beaten
+void ending(void) {
+	// a cool variation of the stage clear
+	// transition is played
+	transition(T_CURTAIN);
+
+	printart(&won, 0, 0);
+	wattron(game, A_ITALIC);
+	mvwprintw(game, 45, (80-31)/2, "Press any key to continue···");
+	wrefresh(game);
+	wattroff(game, A_ITALIC);
+	wgetch(game); // any key will do, really
+	delwin(player.win); // then delete the player's window
+}
+
 // end cleanup
 void endgame(void) {
 	// gracefully end with a transition
 	transition(T_DEBRIS);
 
 	// finish curses now that the player's done
+	delwin(game);
 	endwin();
 
 	// and tell them where they stopped, really not sure

@@ -1,6 +1,6 @@
 #include <curses.h>
 #include "sprites.h"
-#define LVL_MAX 12
+#define LVL_MAX 2
 // ^ maximum level of the game,
 // feel free to crank this up
 
@@ -36,5 +36,6 @@ extern void newlvl(void);
 extern void counter(void);
 extern void titlescr(void);
 extern void gameover(void);
+extern void ending(void);
 extern void enemctrl(void);
 extern void endgame(void);
