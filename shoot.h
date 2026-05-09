@@ -7,7 +7,7 @@
 // the most crucial window here
 extern WINDOW* game;
 
-// transition types, these are
+// transition types, this is
 // all we have for now
 typedef enum trans_t {
 	T_CURTAIN,
@@ -32,10 +32,10 @@ extern void health(SPRITE spr);
 extern void transition(trans_t transition);
 
 // still part of it, but a little more specific
+extern void enemctrl(void);
 extern void newlvl(void);
 extern void counter(void);
 extern void titlescr(void);
 extern void gameover(void);
 extern void ending(void);
-extern void enemctrl(void);
 extern void endgame(void);

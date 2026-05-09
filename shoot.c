@@ -152,16 +152,15 @@ void transition(trans_t transition) {
 					// to the next part
 					if (x < 78) napms(10);
 				}
-				// stop to show a "get ready" kind
-				// of message, making sure the
-				// background is still all dots
+				// stop to show a cool message,
+				// making sure the background
+				// is still all dots
 				if (i == 0) {
-					if (level != 0) {
+					if (level != 0)
 						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
-					}
-					else {
+					else
 						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
-					}
+
 					wrefresh(game);
 					napms(500); // for .5 seconds
 				}
