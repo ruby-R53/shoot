@@ -1,4 +1,3 @@
-#include <unistd.h>
 #include "art.h"
 
 // the title screen!
@@ -57,12 +56,12 @@ void printart(ART* art, int y, int x) {
 	art->win = derwin(game, art->rows, art->cols, y, x);
 
 	// write each row into the screen with a little
-	// delay so that it's animated
+	// (.05-second) delay so that it's animated
 	for (int i = 0; i <= art->rows; ++i) {
 		mvwprintw(art->win, i, 0, "%s", art->art[i]);
 		touchwin(game);
 		wrefresh(art->win);
-		usleep(50000);
+		napms(50);
 	}
 
 	// and delete it while leaving its
