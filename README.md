@@ -1,0 +1,48 @@
+# Shoot!
+
+This is an attempt at making a vertical shooting game in ncurses. It's in a
+very crude state, and currently there are bugs yet to be fixed.
+
+## Story
+
+You're a mad scientist who decided to wander around the cosmos using blueprints
+you stole for highly advanced spaceships, that have weapons built into them.
+This ends up being very useful, because you may have some··· encounters during
+your adventure!
+
+I guess that's it for now.
+
+## How it works
+
+- The game works in a turn-based fashion. This means, each move you make means
+that the opponent must make one as well. If you don't do anything, both of you
+will remain still, until *you* decide to make a move.
+
+- The center of your sprite, `-=^=-`, is where the bullets get spat out from.
+To shoot them, press the `Z` key. No need to worry about running out of them!
+
+- You may also give your opponent the turn by pressing `X`. This skips your
+turn and makes your opponent do something instead. Useful in case you can't
+reach your opponent, which might happen quite often because of the
+poorly-implemented RNG-based moves :)
+
+- You start with 4 HP. Your opponent's HP is the result of the current level
+plus 2, just for an extra challenge.
+
+- By default, you get 12 levels to play. At every 2 levels, or, more precisely,
+at every odd-numbered level, 1 is added to your HP.
+
+- Press `Q` to quit at any time!
+
+## Building
+
+Just run `make` inside the game's directly. You can then run it with `./shoot`.
+
+If you want to however, you may also change `LVL_MAX` in `shoot.h` to change
+which level you want the game to end at. Because it's so crude, nothing will
+really get affected by that. Then, just build it again.
+
+## Contributing
+
+Pull requests, issues, anything is welcome. Or rather, _needed_, because I'm
+not too experienced at this and am rusty :)

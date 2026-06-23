@@ -4,7 +4,7 @@
 #include "art.h"
 #include "shoot.h"
 
-// still nothing for those, for now
+// still nothing for this one, for now
 WINDOW* game;
 
 // but initialize the input buffer
@@ -156,7 +156,7 @@ void transition(trans_t transition) {
 				// making sure the background
 				// is still all dots
 				if (i == 0) {
-					if (level != 0)
+					if (level > 0)
 						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
 					else
 						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
@@ -220,13 +220,13 @@ void transition(trans_t transition) {
 
 				--tick; // one dot removed, 999 more to go
 			}
-
-			// and finally clear the remaining mess in case
-			// any message got printed as well
-			wclear(game);
-			box(game, 0, 0); // which means redrawing the box
 			break;
 	}
+
+	// and finally clear the remaining mess in case
+	// any message got printed as well
+	wclear(game);
+	box(game, 0, 0); // which means redrawing the box
 }
 
 // the enemy's movements, driven by RNG
@@ -281,7 +281,7 @@ void newlvl(void) {
 		// and new positions
 		srandom(time(NULL));
 		enemy.y   = enemy.h + random() % 45 + 1;
-		enemy.x   = enemy.w / 2 + random() % (79-enemy.w) + 1;
+		enemy.x   = enemy.w / 2 + random() % (78-enemy.w) + 1;
 		// ^ use the sprite's boundaries as padding
 		enemy.hp  = level + 5;
 		enemy.win = newspr(enemy);
@@ -386,13 +386,19 @@ void ending(void) {
 	// transition is played
 	transition(T_CURTAIN);
 
+	// the ending art is displayed, more
+	// should be added to it i think
 	printart(&won, 0, 0);
+	// and the text is in italics 'cos
+	// why the hell not
 	wattron(game, A_ITALIC);
 	mvwprintw(game, 45, (80-31)/2, "Press any key to continue···");
 	wrefresh(game);
 	wattroff(game, A_ITALIC);
 	wgetch(game); // any key will do, really
-	delwin(player.win); // then delete the player's window
+	delwin(player.win);
+	// ^ then delete the player's window for
+	// a clean finish
 }
 
 // end cleanup
