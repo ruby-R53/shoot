@@ -307,9 +307,11 @@ void newlvl(void) {
 // level counter
 void counter(void) {
 	if (level <= LVL_MAX)
-		mvwprintw(player.hud, 1, 0, "Level: %02d", level);
-	else // you cleared the game!
-		mvwprintw(player.hud, 1, 0, "All Clear!");
+		mvwprintw(player.hud, 1, 0, "Level: %02d/%02d", level, LVL_MAX);
+	else { // you cleared the game!
+		mvwprintw(player.hud, 1, 0, "            ");
+		mvwprintw(player.hud, 1, 0, " All Clear! ");
+	}
 
 	wrefresh(player.hud);
 }

@@ -37,7 +37,7 @@ void main(void) {
 	titlescr();
 
 	// and now the HUDs, just a little below the main window
-	player.hud = create_win(2, 10, (ymax+50)/2, (xmax-9)/2, false);
+	player.hud = create_win(2, 12, (ymax+50)/2, (xmax-9)/2, false);
 	enemy.hud  = create_win(1, 7, (ymax-52)/2, (xmax-7)/2, false);
 
 	// create sprites for the
