@@ -1,5 +1,5 @@
 # default flags, change if desired
-FLAGS = -Wall -Wno-main -lncurses -ltinfo
+FLAGS = -Werror -Wall -Wno-main -lncurses -ltinfo
 
 # so that we get all the necessary
 # symbols for compiling

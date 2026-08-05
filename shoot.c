@@ -388,19 +388,21 @@ void ending(void) {
 	// transition is played
 	transition(T_CURTAIN);
 
+	// delete the player's window for
+	// a clean finish
+	delwin(player.win);
+
 	// the ending art is displayed, more
 	// should be added to it i think
 	printart(&won, 0, 0);
-	// and the text is in italics 'cos
-	// why the hell not
+
+	// and the bottom text in italics
+	// 'cos why the hell not
 	wattron(game, A_ITALIC);
-	mvwprintw(game, 45, (80-31)/2, "Press any key to continue···");
+	mvwprintw(game, 45, (80-28)/2, "Press any key to continue···");
 	wrefresh(game);
 	wattroff(game, A_ITALIC);
 	wgetch(game); // any key will do, really
-	delwin(player.win);
-	// ^ then delete the player's window for
-	// a clean finish
 }
 
 // end cleanup
@@ -415,8 +417,8 @@ void endgame(void) {
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
 	if (level > 0) printf("Quit at level %d··· see you next time!\n", level);
-	else if (level < 0) ;
-	else printf("You won, thank you for playing!\n");
+	else if (level == 0) printf("You won, thank you for playing!\n");
+	else ;
 
 	// and we're done, hopefully everything went well
 	// otherwise returning 0 would be embarrassing
