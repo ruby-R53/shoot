@@ -16,11 +16,11 @@ void main(void) {
 	int ymax = getmaxy(stdscr); // tallest the screen can be, and
 	int xmax = getmaxx(stdscr); // the widest
 
-	// there has to be enough to fit our game in tho', 85x53 chars
+	// there has to be enough to fit our game in tho', 53x85 chars
 	if (ymax < 53 || xmax < 85) {
 		endwin();
 		printf("%s\n%s\n",
-				"Your terminal isn't at least 85x53 characters!",
+				"Your terminal isn't at least 53x85 characters!",
 				"Please resize your window and try again.");
 		exit(1);
 	}
@@ -29,8 +29,8 @@ void main(void) {
 	curs_set(0); // nor the cursor, this is a game after all
 	raw(); // and don't do any input buffering
 
-	// finally, render where the
-	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true); // game itself is shown
+	// finally, render where the game itself is shown
+	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true);
 
 	// which's where we'll first show the title screen
 	// for a cool little boot
@@ -39,10 +39,6 @@ void main(void) {
 	// and now the HUDs, just a little below the main window
 	player.hud = create_win(2, 12, (ymax+50)/2, (xmax-12)/2, false);
 	enemy.hud  = create_win(1, 07, (ymax-52)/2, (xmax-07)/2, false);
-
-	// create sprites for the
-	player.win = newspr(player); // player
-	enemy.win  = newspr(enemy); // and opponent
 
 	// then get to the game itself
 	ingame();
@@ -55,6 +51,14 @@ void main(void) {
 // where the actual game happens
 void ingame(void) {
 	enemy.hp = 6; // higher than the player's but not by much
+
+	// and start with a curtain-kind
+	// of transition
+	transition(T_CURTAIN);
+
+	// create sprites for the
+	player.win = newspr(player); // player
+	enemy.win  = newspr(enemy); // and opponent
 
 	// show their respective HPs
 	health(player);
@@ -89,8 +93,8 @@ void ingame(void) {
 				if (player.x <= 73) ++player.x;
 				break;
 
-			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X), so
-			// that they don't straight-up get thru the walls here
+			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X),
+			// so that they don't straight-up get thru the walls here
 
 			case 'z': // 'z' for shooting!
 				if (player.y > 2) // but why would you shoot the wall brah
@@ -101,7 +105,7 @@ void ingame(void) {
 				// if we killed our opponent···
 				if (enemy.hp == 0 && enemy.win != NULL) {
 					enemy.win = NULL; // end the sprite
-					++*lvlptr; // raise the current level
+					++level;
 					newlvl();
 					// ^ and create it again, on a different
 					// level with new stats
@@ -141,6 +145,6 @@ void ingame(void) {
 
 	// when you "clear" the game, you're
 	// actually doing exactly that ;)
-	*lvlptr = 0;
+	level = 0;
 	ending();
 }

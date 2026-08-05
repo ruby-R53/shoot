@@ -17,10 +17,8 @@ typedef enum trans_t {
 // generic input buffer for wgetch()
 extern int key;
 
-// starting level
-extern int  level;
-extern int* lvlptr;
-// ^ and its pointer
+// level tracking
+extern uintptr_t  level;
 
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);

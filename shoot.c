@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include <inttypes.h>
 #include "art.h"
 #include "shoot.h"
 
@@ -11,10 +12,7 @@ WINDOW* game;
 int key = 0;
 
 // and the level
-int  level  = 1;
-int* lvlptr = &level;
-// ^ with a pointer so that it can be
-// globally updated
+uintptr_t level = 1;
 
 // create a window with
 // h height,
@@ -47,7 +45,7 @@ WINDOW* newspr(SPRITE spr) {
 // move it
 void mvspr(SPRITE spr, int y, int x) {
 	werase(spr.win); // first, delete its trail
-	mvderwin(spr.win, y, x); // before its derived one (the sprite) can actually move
+	mvderwin(spr.win, y, x); // before it, the sprite, can actually move
 
 	// now actually show the thing at its specific
 	// coordinates
@@ -157,7 +155,7 @@ void transition(trans_t transition) {
 				// is still all dots
 				if (i == 0) {
 					if (level > 0)
-						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
+						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02ld START!", level);
 					else
 						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
 
@@ -307,7 +305,7 @@ void newlvl(void) {
 // level counter
 void counter(void) {
 	if (level <= LVL_MAX)
-		mvwprintw(player.hud, 1, 0, "Level: %02d/%02d", level, LVL_MAX);
+		mvwprintw(player.hud, 1, 0, "Level: %02ld/%02d", level, LVL_MAX);
 	else { // you cleared the game!
 		mvwprintw(player.hud, 1, 0, "            ");
 		mvwprintw(player.hud, 1, 0, " All Clear! ");
@@ -334,7 +332,6 @@ void titlescr(void) {
 	while ((key = wgetch(game))) {
 		switch(key) {
 			case 'z':
-				transition(T_CURTAIN);
 				return;
 				break;
 
@@ -342,7 +339,7 @@ void titlescr(void) {
 				// throw an invalid number
 				// so that it doesn't show
 				// the message
-				*lvlptr = -1;
+				level = (uintptr_t) NULL;
 				endgame();
 				break;
 		}
@@ -356,7 +353,7 @@ void gameover(void) {
 
 	// and here's the menu itself
 	printart(&over, 16, 0);
-	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02d!", level);
+	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02ld!", level);
 	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
@@ -416,9 +413,8 @@ void endgame(void) {
 
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
-	if (level > 0) printf("Quit at level %d··· see you next time!\n", level);
+	if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
 	else if (level == 0) printf("You won, thank you for playing!\n");
-	else ;
 
 	// and we're done, hopefully everything went well
 	// otherwise returning 0 would be embarrassing
