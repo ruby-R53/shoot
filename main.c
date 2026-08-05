@@ -45,7 +45,7 @@ void main(void) {
 
 	// and once the above is done, we
 	// are done
-	endgame();
+	endgame(false);
 }
 
 // where the actual game happens

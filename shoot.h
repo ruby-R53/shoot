@@ -1,6 +1,6 @@
 #include <curses.h>
 #include "sprites.h"
-#define LVL_MAX 12
+#define LVL_MAX 2
 // ^ maximum level of the game,
 // feel free to crank this up
 
@@ -18,7 +18,7 @@ typedef enum trans_t {
 extern int key;
 
 // level tracking
-extern uintptr_t  level;
+extern uintptr_t level;
 
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
@@ -36,4 +36,4 @@ extern void counter(void);
 extern void titlescr(void);
 extern void gameover(void);
 extern void ending(void);
-extern void endgame(void);
+extern void endgame(bool aborted);

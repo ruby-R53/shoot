@@ -339,8 +339,7 @@ void titlescr(void) {
 				// throw an invalid number
 				// so that it doesn't show
 				// the message
-				level = (uintptr_t) NULL;
-				endgame();
+				endgame(true);
 				break;
 		}
 	}
@@ -369,7 +368,7 @@ void gameover(void) {
 				break;
 
 			case 'n': // or end it all
-				endgame();
+				endgame(false);
 				break;
 
 			default: // or ignore it in case if it's invalid
@@ -403,7 +402,7 @@ void ending(void) {
 }
 
 // end cleanup
-void endgame(void) {
+void endgame(bool aborted) {
 	// gracefully end with a transition
 	transition(T_DEBRIS);
 
@@ -413,8 +412,10 @@ void endgame(void) {
 
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
-	if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
-	else if (level == 0) printf("You won, thank you for playing!\n");
+	if (!aborted) {
+		if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
+		else if (level == 0) printf("You won, thank you for playing!\n");
+	}
 
 	// and we're done, hopefully everything went well
 	// otherwise returning 0 would be embarrassing
