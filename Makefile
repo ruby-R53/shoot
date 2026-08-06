@@ -1,6 +1,6 @@
 # default flags, change if desired
 FLAGS = -Werror -Wall -Wno-main -lncurses -ltinfo
-DEBUG = -g -fsanitize=address
+DEBUG = -g -fsanitize=address -fsanitize=undefined
 
 # so that we get all the necessary
 # symbols for compiling

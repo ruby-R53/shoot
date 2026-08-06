@@ -10,7 +10,6 @@ ART title = {
 		"       +#+ +#+    +#+ +#+    +#+ +#+    +#+    +#+     +#+",
 		"#+#    #+# #+#    #+# #+#    #+# #+#    #+#    #+#        ",
 		" ########  ###    ###  ########   ########     ###     ###",
-		"\0"
 	},
 	.rows = 7,
 	.cols = 58
@@ -25,7 +24,6 @@ ART over = {
 		"#  ### ###### #    # #         #    # #    # #      ##### ",
 		"#    # #    # #    # #         #    #  #  #  #      #   # ",
 		" ####  #    # #    # ######     ####    ##   ###### #    #",
-		"\0"
 	},
 	.rows = 6,
 	.cols = 58
@@ -41,7 +39,6 @@ ART won = {
 		"   #   #    # #    #    #  #  # #    # #  # #    ",
 		"   #   #    # #    #    #  #  # #    # #   ## ###",
 		"   #    ####   ####      ## ##   ####  #    # ###",
-		"\0"
 	},
 	.rows = 7,
 	.cols = 49
@@ -60,7 +57,7 @@ void printart(ART* art, int y, int x) {
 
 	// write each row into the screen with a little
 	// (.05-second) delay so that it looks animated
-	for (int i = 0; i <= art->rows; ++i) {
+	for (int i = 0; i < art->rows; ++i) {
 		mvwprintw(art->win, i, 0, "%s", art->art[i]);
 		touchwin(game);
 		wrefresh(art->win);

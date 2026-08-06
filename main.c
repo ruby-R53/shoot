@@ -52,7 +52,7 @@ void main(void) {
 void ingame(void) {
 	enemy.hp = 6; // higher than the player's but not by much
 
-	// and start with a curtain-kind
+	// start with a curtain-kind
 	// of transition
 	transition(T_CURTAIN);
 

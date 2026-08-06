@@ -331,14 +331,11 @@ void titlescr(void) {
 	// then handle the keys
 	while ((key = wgetch(game))) {
 		switch(key) {
-			case 'z':
+			case 'z': // start the game
 				return;
 				break;
 
-			case 'q':
-				// throw an invalid number
-				// so that it doesn't show
-				// the message
+			case 'q': // or abort it
 				endgame(true);
 				break;
 		}
