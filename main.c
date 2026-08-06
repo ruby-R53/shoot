@@ -146,6 +146,11 @@ void ingame(void) {
 	// a clean finish
 	delwin(player.win);
 
+	// do a little cleanup by
+	// closing the HUDs
+	delwin(enemy.hud);
+	delwin(player.hud);
+
 	// and go to the end screen
 	ending();
 }

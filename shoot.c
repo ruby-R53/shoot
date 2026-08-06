@@ -168,7 +168,7 @@ void transition(trans_t transition) {
 		// or fill the screen with dots, clearing
 		// them out one by one later
 		case T_DEBRIS:
-			int tick = 2000;
+			int tick = 2000 - 1;
 			// 1k iterations (for each) seems reasonable,
 			// it doesn't take very long to happen and it
 			// doesn't fill the screen so much
@@ -196,7 +196,7 @@ void transition(trans_t transition) {
 
 				// transfer current iteration to the
 				// array
-				backpos = 2000 - tick;
+				backpos = (2000-1) - tick;
 
 				// and store current positions for
 				// later
@@ -208,8 +208,8 @@ void transition(trans_t transition) {
 
 			// second part, unfill
 			while (tick >= 0) {
-				// and restore the array indexer
-				backpos = 1000 - tick;
+				// restore the array indexer
+				backpos = (1000-1) - tick;
 
 				// so that we can unfill the spots back
 				mvwaddch(game, backup[0][backpos], backup[1][backpos], ' ');
@@ -401,11 +401,6 @@ void ending(void) {
 void endgame(bool aborted) {
 	// gracefully end with a transition
 	transition(T_DEBRIS);
-
-	// do a little cleanup by
-	// closing the HUDs
-	delwin(enemy.hud);
-	delwin(player.hud);
 
 	// and finish curses now that the player's done
 	delwin(game);
