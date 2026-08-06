@@ -117,16 +117,12 @@ void ingame(void) {
 				break;
 
 			case 'q': // 'q' exits the game!
-				// do a little cleanup by
-				// closing the HUDs
-				delwin(enemy.hud);
-				delwin(player.hud);
 				// now get back to main()
 				return;
 				break;
 
 			default:
-				continue;
+				continue; // do literally nothing whatsoever
 				break;
 		}
 
@@ -146,5 +142,10 @@ void ingame(void) {
 	// when you "clear" the game, you're
 	// actually doing exactly that ;)
 	level = 0;
+	// delete the player's window for
+	// a clean finish
+	delwin(player.win);
+
+	// and go to the end screen
 	ending();
 }

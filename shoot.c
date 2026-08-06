@@ -384,10 +384,6 @@ void ending(void) {
 	// transition is played
 	transition(T_CURTAIN);
 
-	// delete the player's window for
-	// a clean finish
-	delwin(player.win);
-
 	// the ending art is displayed, more
 	// should be added to it i think
 	printart(&won, 0, 0);
@@ -406,7 +402,12 @@ void endgame(bool aborted) {
 	// gracefully end with a transition
 	transition(T_DEBRIS);
 
-	// finish curses now that the player's done
+	// do a little cleanup by
+	// closing the HUDs
+	delwin(enemy.hud);
+	delwin(player.hud);
+
+	// and finish curses now that the player's done
 	delwin(game);
 	endwin();
 
@@ -414,7 +415,7 @@ void endgame(bool aborted) {
 	// how useful or cool this is
 	if (!aborted) {
 		if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
-		else if (level == 0) printf("You won, thank you for playing!\n");
+		else printf("You won, thank you for playing!\n");
 	}
 
 	// and we're done, hopefully everything went well
