@@ -1,5 +1,6 @@
 # default flags, change if desired
 FLAGS = -Werror -Wall -Wno-main -lncurses -ltinfo
+DEBUG = -g -fsanitize=address
 
 # so that we get all the necessary
 # symbols for compiling
@@ -12,4 +13,4 @@ all:
 # additionally you can easily make
 # debug builds instead
 dbg:
-	gcc -fsanitize=address -g $(SRCES) -o shoot $(FLAGS)
+	gcc $(SRCES) -o shoot $(FLAGS) $(DEBUG)
