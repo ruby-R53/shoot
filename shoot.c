@@ -364,10 +364,15 @@ void gameover(void) {
 		key = wgetch(game);
 		switch(key) {
 			case 'y':
-				// just restore the stats and start a
-				// new game like nothing had happened
+				// just restore the stats
 				player.win = newspr(player);
-				player.hp  = 4;
+				player.hp  = 4; // initial HP
+				// the bonus accumulated by the player
+				// up until the very point where they died
+				for (int extra = 0; extra <= level; ++extra)
+					player.hp += extra % 2;
+
+				// and finally, restart the level
 				newlvl();
 				break;
 
