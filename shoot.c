@@ -80,8 +80,8 @@ int shoot(SPRITE src, SPRITE dst) {
 	// bullet's direction, otherwise don't do anything
 	bool flip = (src.win == player.win) ? false : true;
 
-	// move that bullet thing or down, depending on
-	// who's shooting!
+	// move that bullet thing or down,
+	// depending on who's shooting!
 	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
 		mvspr(bullet, bullet.y, bullet.x);
 
@@ -93,7 +93,7 @@ int shoot(SPRITE src, SPRITE dst) {
 			--dst.hp;
 			health(dst);
 			if (dst.hp == 0) kill(dst);
-			goto cleanup;
+			break;
 			// it makes sense that it disappears after hitting
 			// something before the wall tho'
 		}
@@ -102,7 +102,6 @@ int shoot(SPRITE src, SPRITE dst) {
 		flushinp(); // discard any input so that the game doesn't lag
 	}
 
-cleanup:
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
