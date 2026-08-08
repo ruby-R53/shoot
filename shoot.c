@@ -339,6 +339,7 @@ void titlescr(void) {
 
 			case 'q': // or abort it
 				endgame(true);
+				exit(0);
 				break;
 
 			default: // or do nothing if it's invalid
