@@ -80,9 +80,10 @@ int shoot(SPRITE src, SPRITE dst) {
 	// bullet's direction, otherwise don't do anything
 	bool flip = (src.win == player.win) ? false : true;
 
-	// move that bullet thing or down,
+	// now move the bullet up or down,
 	// depending on who's shooting!
-	for (; (flip ? bullet.y <= 48 : bullet.y >= 1); (flip ? ++bullet.y : --bullet.y)) {
+	do {
+		flip ? ++bullet.y : --bullet.y;
 		mvspr(bullet, bullet.y, bullet.x);
 
 		// if the target (dst) is around, check if the bullet
@@ -100,7 +101,7 @@ int shoot(SPRITE src, SPRITE dst) {
 
 		napms(5); // and move it every .005 secs
 		flushinp(); // discard any input so that the game doesn't lag
-	}
+	} while ((flip ? bullet.y < 48 : bullet.y > 1));
 
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
