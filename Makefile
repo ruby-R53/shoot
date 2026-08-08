@@ -1,6 +1,6 @@
 # default flags, change if desired
 FLAGS  = -lncurses -ltinfo
-FLAGS += -Wall -Werror -Wno-c23-extensions
+FLAGS += -Wall -Werror -pedantic
 DEBUG  = -g -fsanitize=address
 
 # so that we get all the necessary

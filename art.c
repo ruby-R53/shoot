@@ -2,7 +2,7 @@
 
 // the title screen!
 ART title = {
-	.art = {
+	.art = (const char* []) {
 		" ::::::::  :::    :::  ::::::::   :::::::: ::::::::::: :::",
 		":+:    :+: :+:    :+: :+:    :+: :+:    :+:    :+:     :+:",
 		"+:+        +:+    +:+ +:+    +:+ +:+    +:+    +:+     +:+",
@@ -17,7 +17,7 @@ ART title = {
 
 // and game over one!
 ART over = {
-	.art = {
+	.art = (const char* []) {
 		" ####    ##   #    # ######     ####  #    # ###### ##### ",
 		"#    #  #  #  ##  ## #         #    # #    # #      #    #",
  		"#      #    # # ## # #####     #    # #    # #####  #    #",
@@ -31,7 +31,7 @@ ART over = {
 
 // and the ending one!
 ART won = {
-	.art = {
+	.art = (const char* []) {
 		"#     #                 #     #               ###",
 		" #   #  ####  #    #    #  #  #  ####  #    # ###",
 		"  # #  #    # #    #    #  #  # #    # ##   # ###",
@@ -59,7 +59,6 @@ void printart(ART* art, int y, int x) {
 	// (.05-second) delay so that it looks animated
 	for (int i = 0; i < art->rows; ++i) {
 		mvwprintw(art->win, i, 0, "%s", art->art[i]);
-		touchwin(game);
 		wrefresh(art->win);
 		napms(50);
 	}

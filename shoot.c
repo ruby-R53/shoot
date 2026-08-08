@@ -140,7 +140,7 @@ void transition(trans_t transition) {
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
-		case T_CURTAIN:
+		case T_CURTAIN: ;
 			const chtype fill[2] = { '.', ' ' };
 			for (int i = 0; i <= 1; ++i) {
 				for (x = 1; x <= 78; ++x) {
@@ -169,7 +169,7 @@ void transition(trans_t transition) {
 
 		// or fill the screen with dots, clearing
 		// them out one by one later
-		case T_DEBRIS:
+		case T_DEBRIS: ;
 			int tick = 2000 - 1;
 			// 1k iterations (for each) seems reasonable,
 			// it doesn't take very long to happen and it

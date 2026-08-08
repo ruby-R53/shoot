@@ -52,7 +52,6 @@ int main(int argc, char** argv) {
 	// and once the above is done, we
 	// are done
 	endgame(false);
-
 	return 0;
 }
 
@@ -111,7 +110,7 @@ void ingame(void) {
 					enemy.hp = shoot(player, enemy);
 
 				// if we killed our opponent···
-				if (enemy.hp == 0 && enemy.win != NULL) {
+				if (enemy.hp == 0) {
 					enemy.win = NULL; // end the sprite
 					++level;
 					newlvl();
@@ -138,7 +137,7 @@ void ingame(void) {
 		mvspr(player, player.y, player.x);
 
 		// and now it's the enemy's turn!
-		enemctrl();
+		if (enemy.win) enemctrl();
 
 		// what to do whenever the player dies
 		if (player.hp == 0) {
