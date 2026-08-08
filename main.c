@@ -7,7 +7,10 @@ void ingame(void);
 
 // where everything is stitched together
 // to actually work
-void main(void) {
+void main(int argc, char** argv) {
+	if (argc <= 1) levels = LVL_MAX;
+	else levels = atoi(argv[1]);
+
 	// initiate our screen, but
 	// run some checks first
 	initscr();
@@ -69,7 +72,7 @@ void ingame(void) {
 
 	keypad(game, TRUE); // support for arrow keys
 	// now, the main loop
-	while (level <= LVL_MAX) {
+	while (level <= levels) {
 		key = wgetch(game);
 		switch(key) {
 			// yes, you can use Vim keys here

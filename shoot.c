@@ -12,6 +12,7 @@ WINDOW* game;
 int key = 0;
 
 // and the level
+unsigned int levels = 0;
 uintptr_t level = 1;
 
 // create a window with
@@ -271,7 +272,7 @@ void enemctrl(void) {
 
 // what to do on a new level
 void newlvl(void) {
-	if (level <= LVL_MAX) {
+	if (level <= levels) {
 		transition(T_CURTAIN); // play a cool transition
 
 		// regenerate the enemy sprites,
@@ -304,8 +305,8 @@ void newlvl(void) {
 
 // level counter
 void counter(void) {
-	if (level <= LVL_MAX)
-		mvwprintw(player.hud, 1, 0, "Level: %02ld/%02d", level, LVL_MAX);
+	if (level <= levels)
+		mvwprintw(player.hud, 1, 0, "Level: %02ld/%02d", level, levels);
 	else { // you cleared the game!
 		mvwprintw(player.hud, 1, 0, "            ");
 		mvwprintw(player.hud, 1, 0, " All Clear! ");
