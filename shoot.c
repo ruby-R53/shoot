@@ -157,7 +157,7 @@ void transition(trans_t transition) {
 				// making sure the background
 				// is still all dots
 				if (i == 0) {
-					if (level > 0)
+					if (level <= levels)
 						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02ld START!", level);
 					else
 						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
@@ -310,7 +310,7 @@ void counter(void) {
 	if (level <= levels)
 		mvwprintw(player.hud, 1, 0, "Level: %02ld/%02d", level, levels);
 	else { // you cleared the game!
-		mvwprintw(player.hud, 1, 0, "            ");
+		wclrtoeol(player.hud);
 		mvwprintw(player.hud, 1, 0, " All Clear! ");
 	}
 
@@ -413,7 +413,9 @@ void endgame(bool aborted) {
 	// and tell them where they stopped, really not sure
 	// how useful or cool this is
 	if (!aborted) {
-		if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
-		else printf("You won, thank you for playing!\n");
+		if (level <= levels)
+			printf("Quit at level %ld··· see you next time!\n", level);
+		else
+			printf("You won, thank you for playing!\n");
 	}
 }

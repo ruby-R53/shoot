@@ -147,10 +147,6 @@ void ingame(void) {
 		}
 	}
 
-	// when you "clear" the game, you're
-	// actually doing exactly that ;)
-	level = 0;
-
 	// delete the player's window for
 	// a clean finish
 	delwin(player.win);
