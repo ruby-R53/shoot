@@ -1,3 +1,5 @@
+#ifndef SHOOT_H
+#define SHOOT_H
 #include <curses.h>
 #include "sprites.h"
 #define LVL_MAX 12
@@ -38,3 +40,4 @@ extern void titlescr(void);
 extern void gameover(void);
 extern void ending(void);
 extern void endgame(bool aborted);
+#endif // SHOOT_H

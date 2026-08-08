@@ -1,3 +1,5 @@
+#ifndef SPRITES_H
+#define SPRITES_H
 #include <curses.h>
 
 // a sprite here has a
@@ -15,3 +17,4 @@ typedef struct SPRITE {
 extern SPRITE player;
 extern SPRITE enemy;
 extern SPRITE bullet;
+#endif // SPRITES_H

@@ -7,9 +7,12 @@ void ingame(void);
 
 // where everything is stitched together
 // to actually work
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
+	// check if we have any argument to
+	// change the amount of levels we want
 	if (argc <= 1) levels = LVL_MAX;
 	else levels = atoi(argv[1]);
+	// otherwise just use the default of 12
 
 	// initiate our screen, but
 	// run some checks first
@@ -19,7 +22,7 @@ void main(int argc, char** argv) {
 	int ymax = getmaxy(stdscr); // tallest the screen can be, and
 	int xmax = getmaxx(stdscr); // the widest
 
-	// there has to be enough to fit our game in tho', 53x85 chars
+	// there has to be enough to fit our game in, 53x85 chars
 	if (ymax < 53 || xmax < 85) {
 		endwin();
 		printf("%s\n%s\n",
@@ -49,6 +52,8 @@ void main(int argc, char** argv) {
 	// and once the above is done, we
 	// are done
 	endgame(false);
+
+	return 0;
 }
 
 // where the actual game happens

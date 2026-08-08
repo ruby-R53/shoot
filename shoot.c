@@ -11,9 +11,11 @@ WINDOW* game;
 // but initialize the input buffer
 int key = 0;
 
-// and the level
-unsigned int levels = 0;
+// and the level information
 uintptr_t level = 1;
+unsigned int levels = 0;
+// ^ gets defined in main() because
+// it depends on `argv`
 
 // create a window with
 // h height,
@@ -339,6 +341,10 @@ void titlescr(void) {
 			case 'q': // or abort it
 				endgame(true);
 				break;
+
+			default: // or do nothing if it's invalid
+				continue;
+				break;
 		}
 	}
 }
@@ -410,8 +416,4 @@ void endgame(bool aborted) {
 		if (level > 0) printf("Quit at level %ld··· see you next time!\n", level);
 		else printf("You won, thank you for playing!\n");
 	}
-
-	// and we're done, hopefully everything went well
-	// otherwise returning 0 would be embarrassing
-	exit(0);
 }
