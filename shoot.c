@@ -247,7 +247,7 @@ void enemctrl(void) {
 	 * for going up/down/left/right,
 	 * all respectively */
 	unsigned char bound[5] = {
-		(player.y - enemy.h), // for shooting based on the player's position*
+		player.y, // for shooting based on the player's position*
 		enemy.h, // upper boundary
 		(49 - enemy.h), // lower boundary
 		(enemy.w / 2) - (enemy.w % 2), // leftmost boundary**
@@ -264,7 +264,7 @@ void enemctrl(void) {
 	// now handle what our dice showed
 	switch(move) {
 		case MV_SHOOT:
-			if (enemy.y <= bound[0]) player.hp = shoot(enemy, player);
+			if (enemy.y < bound[0]) player.hp = shoot(enemy, player);
 			break;
 
 		case MV_UP:
@@ -298,7 +298,7 @@ void newlvl(void) {
 		// and new positions
 		srandom(time(NULL));
 		enemy.y   = enemy.h + random() % 45 + 1;
-		enemy.x   = (enemy.w / 2) + random() % (79 - enemy.w);
+		enemy.x   = (enemy.w / 2) + random() % (78 - enemy.w);
 		// ^ +1 for the window boundaries (borders)
 		enemy.hp  = level + 5;
 		enemy.win = newspr(enemy);

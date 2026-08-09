@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 	int xmax = getmaxx(stdscr); // the widest
 
 	// there has to be enough to fit our game in, 53x85 chars
-	if (ymax < 53 || xmax < 85) {
+	if (ymax <= 53 || xmax <= 85) {
 		endwin();
 		printf("%s\n%s\n",
 				"Your terminal isn't at least 53x85 characters!",
