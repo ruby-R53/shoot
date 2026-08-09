@@ -240,29 +240,37 @@ void enemctrl(void) {
 		MV_RIGHT
 	} move_t;
 
+	unsigned char bound[5] = {
+		(player.y - enemy.h), // for shooting based on the player's position
+		enemy.h,  // upper boundary
+		(49 - enemy.h), // lower boundary
+		(enemy.w / 2),  // leftmost boundary
+		(79 - enemy.w)  // rightmost boundary
+	};
+
 	srandom(time(NULL)); // make the moves "truly" random
-	move_t move = random() % 4;
+	move_t move = random() % 5;
 	// ^ FIXME there actually seems to be some bias towards
 	// moving to the same direction over and over
 	switch(move) {
 		case MV_SHOOT:
-			if (enemy.y < 48) player.hp = shoot(enemy, player);
+			if (enemy.y <= bound[0]) player.hp = shoot(enemy, player);
 			break;
 
 		case MV_UP:
-			if (enemy.y >= 2) --enemy.y;
+			if (enemy.y > bound[1]) --enemy.y;
 			break;
 
 		case MV_DOWN:
-			if (enemy.y <= 47) ++enemy.y;
+			if (enemy.y < bound[2]) ++enemy.y;
 			break;
 
 		case MV_LEFT:
-			if (enemy.x >= 2) --enemy.x;
+			if (enemy.x >= bound[3]) --enemy.x;
 			break;
 
 		case MV_RIGHT:
-			if (enemy.x <= 73) ++enemy.x;
+			if (enemy.x < bound[4]) ++enemy.x;
 			break;
 	}
 
@@ -280,7 +288,7 @@ void newlvl(void) {
 		// and new positions
 		srandom(time(NULL));
 		enemy.y   = enemy.h + random() % 45 + 1;
-		enemy.x   = enemy.w + random() % (77 - enemy.w);
+		enemy.x   = (enemy.w / 2) + random() % (79 - enemy.w);
 		// ^ +1 for the window boundaries (borders)
 		enemy.hp  = level + 5;
 		enemy.win = newspr(enemy);
