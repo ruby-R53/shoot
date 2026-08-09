@@ -67,6 +67,14 @@ void ingame(void) {
 	player.win = newspr(player); // player
 	enemy.win  = newspr(enemy); // and opponent
 
+	unsigned char bound[5] = {
+		player.h, // upper boundary
+		(49 - player.h), // lower boundary
+		(player.w / 2) - (player.w % 2), // leftmost boundary
+		(79 - enemy.w), // rightmost boundary
+		player.h // shooting boundary
+	};
+
 	// show their respective HPs
 	health(player);
 	health(enemy);
@@ -82,32 +90,29 @@ void ingame(void) {
 			// yes, you can use Vim keys here
 			case KEY_UP:
 			case 'k':
-				if (player.y > player.h) --player.y;
+				if (player.y > bound[0]) --player.y;
 				break;
 
 			case KEY_DOWN:
 			case 'j':
-				if (player.y < 49 - player.h) ++player.y;
+				if (player.y < bound[1]) ++player.y;
 				break;
 
 			case KEY_LEFT:
 			case 'h':
-				if (player.x > (player.w/2) - 1) --player.x;
+				if (player.x > bound[2]) --player.x;
 				break;
 
 			case KEY_RIGHT:
 			case 'l':
-				if (player.x < 79 - player.w) ++player.x;
+				if (player.x < bound[3]) ++player.x;
 				break;
 
-			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X),
-			// so that they don't straight-up get thru the walls here
-
 			case 'z': // 'z' for shooting!
-				if (player.y > 2) // but why would you shoot the wall brah
-					// this function not only shoots but also kills, so
-					// the enemy's HP is tracked here as well
+				if (player.y > bound[4])
 					enemy.hp = shoot(player, enemy);
+					// ^ this function not only shoots but also kills, so
+					// the enemy's HP is tracked here as well
 
 				// if we killed our opponent···
 				if (enemy.hp == 0) {

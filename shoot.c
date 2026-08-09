@@ -52,7 +52,7 @@ void mvspr(SPRITE spr, int y, int x) {
 	// now actually show the thing at its specific
 	// coordinates
 	wprintw(spr.win, "%s", spr.skin);
-	touchline(game, y, spr.h); // but the parent window must be made aware of that
+	wtouchln(game, y, spr.h, 1); // but the parent window must be made aware of that
 	wrefresh(game); // then actually update everything
 }
 

@@ -8,8 +8,11 @@ DEBUG  = -g -fsanitize=address
 SRCES = art.c shoot.c sprites.c main.c
 
 # and put this all together
-all:
+build:
 	clang -o shoot $(FLAGS) $(SRCES)
+
+strip: build
+	strip -s shoot
 
 # and additionally you can easily
 # make debug builds
