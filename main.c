@@ -38,6 +38,10 @@ int main(int argc, char** argv) {
 	// finally, render where the game itself is shown
 	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true);
 
+	// tell curses not to perform any extra cursor
+	// movement
+	leaveok(game, TRUE);
+
 	// which's where we'll first show the title screen
 	// for a cool little boot
 	titlescr();

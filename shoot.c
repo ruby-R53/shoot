@@ -46,7 +46,6 @@ WINDOW* newspr(SPRITE spr) {
 
 // move it
 void mvspr(SPRITE spr, int y, int x) {
-	wnoutrefresh(game);
 	werase(spr.win); // first, delete its trail
 	mvderwin(spr.win, y, x); // before it, the sprite, can actually move
 
@@ -54,6 +53,7 @@ void mvspr(SPRITE spr, int y, int x) {
 	// coordinates
 	wprintw(spr.win, "%s", spr.skin);
 	wtouchln(game, y, spr.h, 1); // but the parent window must be made aware of that
+	wnoutrefresh(game);
 	doupdate(); // then actually update everything
 }
 
@@ -104,7 +104,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	} while ((flip ? bullet.y < (49 - src.h) : bullet.y > src.h));
 
 	werase(bullet.win); // make it disappear!
-	wrefresh(bullet.win);
+	//wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
 	if (dst.hp > 0) mvspr(dst, dst.y, dst.x);
 	// ^ and redraw the thing in case it got hit but is still alive
@@ -170,12 +170,12 @@ void transition(trans_t transition) {
 		// or fill the screen with dots, clearing
 		// them out one by one later
 		case T_DEBRIS: ;
-			int tick = 2000 - 1;
+			unsigned int tick = 2000 - 1;
 			// 1k iterations (for each) seems reasonable,
 			// it doesn't take very long to happen and it
 			// doesn't fill the screen so much
 
-			int backup[2][1000];
+			unsigned int backup[2][1000];
 			unsigned int backpos = 0;
 			// for smoothing the transition out, these will
 			// store each of y and x's positions
@@ -184,7 +184,7 @@ void transition(trans_t transition) {
 			srandom(time(NULL));
 
 			// first part, fill
-			while (tick >= 1000) {
+			while (tick > (1000 - 1)) {
 				// choose a random spot to fill,
 				// with the walls in mind
 				y = 1 + random() % 48;
@@ -209,7 +209,7 @@ void transition(trans_t transition) {
 			}
 
 			// second part, unfill
-			while (tick >= 0) {
+			while (tick > 0) {
 				// restore the array indexer
 				backpos = (1000-1) - tick;
 
@@ -220,13 +220,13 @@ void transition(trans_t transition) {
 
 				--tick; // one dot removed, 999 more to go
 			}
+
+			// and finally clear the remaining mess in case
+			// any message got printed as well
+			werase(game);
+			box(game, 0, 0); // which means redrawing the box
 			break;
 	}
-
-	// and finally clear the remaining mess in case
-	// any message got printed as well
-	wclear(game);
-	box(game, 0, 0); // which means redrawing the box
 }
 
 // the enemy's movements, driven by RNG
