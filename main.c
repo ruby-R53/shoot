@@ -82,22 +82,22 @@ void ingame(void) {
 			// yes, you can use Vim keys here
 			case KEY_UP:
 			case 'k':
-				if (player.y >= 2) --player.y;
+				if (player.y > player.h) --player.y;
 				break;
 
 			case KEY_DOWN:
 			case 'j':
-				if (player.y <= 47) ++player.y;
+				if (player.y < 49 - player.h) ++player.y;
 				break;
 
 			case KEY_LEFT:
 			case 'h':
-				if (player.x >= 2) --player.x;
+				if (player.x > (player.w/2) - 1) --player.x;
 				break;
 
 			case KEY_RIGHT:
 			case 'l':
-				if (player.x <= 73) ++player.x;
+				if (player.x < 79 - player.w) ++player.x;
 				break;
 
 			// 2, 47, 2, 73··· these are all the player's boundaries (Y, Y, X, X),
@@ -116,10 +116,6 @@ void ingame(void) {
 					newlvl();
 					// ^ and create it again, on a different
 					// level with new stats
-
-					// and in case this is the final
-					// shot, abort the loop!
-					if (level > levels) break;
 				}
 				// if not, try again!
 				break;
@@ -137,13 +133,20 @@ void ingame(void) {
 				break;
 		}
 
-		// then, update the sprite
+		// if the player has already
+		// finished the game, skip all
+		// of this!
+		if (level > levels) break;
+
+		// update the sprite
 		mvspr(player, player.y, player.x);
 
 		// and now it's the enemy's turn!
 		enemctrl();
 
-		// what to do whenever the player dies
+		// what to do whenever the player dies:
+		// NULL their sprite's window,
+		// and go to a nice little menu
 		if (player.hp == 0) {
 			player.win = NULL;
 			gameover();

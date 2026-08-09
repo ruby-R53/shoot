@@ -134,8 +134,7 @@ void health(SPRITE spr) {
 // play a cool little transition between
 // stages and moments
 void transition(trans_t transition) {
-	int y = 0;
-	int x = 0;
+	int y = 0, x = 0;
 
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
@@ -281,8 +280,8 @@ void newlvl(void) {
 		// and new positions
 		srandom(time(NULL));
 		enemy.y   = enemy.h + random() % 45 + 1;
-		enemy.x   = enemy.w + random() % (78 - enemy.w);
-		// ^ use the sprite's boundaries as padding
+		enemy.x   = enemy.w + random() % (77 - enemy.w);
+		// ^ +1 for the window boundaries (borders)
 		enemy.hp  = level + 5;
 		enemy.win = newspr(enemy);
 
