@@ -11,6 +11,7 @@ SRCES = art.c shoot.c sprites.c main.c
 build:
 	clang -o shoot $(FLAGS) $(SRCES)
 
+# additionally strip if wanted
 strip: build
 	strip -s shoot
 

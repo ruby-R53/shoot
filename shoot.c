@@ -46,6 +46,7 @@ WINDOW* newspr(SPRITE spr) {
 
 // move it
 void mvspr(SPRITE spr, int y, int x) {
+	wnoutrefresh(game);
 	werase(spr.win); // first, delete its trail
 	mvderwin(spr.win, y, x); // before it, the sprite, can actually move
 
@@ -53,7 +54,7 @@ void mvspr(SPRITE spr, int y, int x) {
 	// coordinates
 	wprintw(spr.win, "%s", spr.skin);
 	wtouchln(game, y, spr.h, 1); // but the parent window must be made aware of that
-	wrefresh(game); // then actually update everything
+	doupdate(); // then actually update everything
 }
 
 // what the game is about, we need to specify
@@ -100,7 +101,7 @@ int shoot(SPRITE src, SPRITE dst) {
 
 		napms(5); // and move it every .005 secs
 		flushinp(); // discard any input so that the game doesn't lag
-	} while ((flip ? bullet.y < 48 : bullet.y > 1));
+	} while ((flip ? bullet.y < (49 - src.h) : bullet.y > src.h));
 
 	werase(bullet.win); // make it disappear!
 	wrefresh(bullet.win);
@@ -380,7 +381,7 @@ void gameover(void) {
 		key = wgetch(game);
 		switch(key) {
 			case 'y':
-				// just restore the stats
+				// restore the player
 				player.win = newspr(player);
 				player.hp  = 4; // initial HP
 				// the bonus accumulated by the player
