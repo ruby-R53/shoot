@@ -233,25 +233,34 @@ void enemctrl(void) {
 	// one of these must be selected
 	// at random
 	typedef enum MOVE {
-		MV_SHOOT,
-		MV_LEFT,
-		MV_UP,
 		MV_DOWN,
-		MV_RIGHT
+		MV_LEFT,
+		MV_RIGHT,
+		MV_SHOOT,
+		MV_UP
 	} move_t;
 
+	/* boundary system that works
+	 * following the above struct:
+	 * the boundaries for shooting and
+	 * for going up/down/left/right,
+	 * all respectively */
 	unsigned char bound[5] = {
-		(player.y - enemy.h), // for shooting based on the player's position
-		enemy.h,  // upper boundary
+		(player.y - enemy.h), // for shooting based on the player's position*
+		enemy.h, // upper boundary
 		(49 - enemy.h), // lower boundary
-		(enemy.w / 2),  // leftmost boundary
-		(79 - enemy.w)  // rightmost boundary
+		(enemy.w / 2) - (enemy.w % 2), // leftmost boundary**
+		(79 - enemy.w) // rightmost boundary
+		/* *do not shoot if the player is out of (vertical) reach!
+		 * **the 2nd part is somewhat required because having an
+		 * even-numbered width makes the 1st's calculation yield
+		 * the actual boundary for that side of the screen, but
+		 * then that isn't the case with odd-numbered ones */
 	};
 
 	srandom(time(NULL)); // make the moves "truly" random
-	move_t move = random() % 5;
-	// ^ FIXME there actually seems to be some bias towards
-	// moving to the same direction over and over
+	move_t move = random() % 5; // limit them to the 5 ones available
+	// now handle what our dice showed
 	switch(move) {
 		case MV_SHOOT:
 			if (enemy.y <= bound[0]) player.hp = shoot(enemy, player);
@@ -266,7 +275,7 @@ void enemctrl(void) {
 			break;
 
 		case MV_LEFT:
-			if (enemy.x >= bound[3]) --enemy.x;
+			if (enemy.x > bound[3]) --enemy.x;
 			break;
 
 		case MV_RIGHT:
@@ -385,6 +394,7 @@ void gameover(void) {
 
 			case 'n': // or end it all
 				endgame(false);
+				exit(0);
 				break;
 
 			default: // or ignore it in case if it's invalid
