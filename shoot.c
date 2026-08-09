@@ -88,8 +88,7 @@ int shoot(SPRITE src, SPRITE dst) {
 
 		// if the target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
-		if (dst.hp != 0 &&
-			bullet.y == dst.hit[0] &&
+		if (bullet.y == dst.hit[0] &&
 			bullet.x == dst.hit[1]) {
 			--dst.hp;
 			health(dst);
@@ -104,7 +103,6 @@ int shoot(SPRITE src, SPRITE dst) {
 	} while ((flip ? bullet.y < (49 - src.h) : bullet.y > src.h));
 
 	werase(bullet.win); // make it disappear!
-	//wrefresh(bullet.win);
 	delwin(bullet.win); // let curses know it disappeared!
 	if (dst.hp > 0) mvspr(dst, dst.y, dst.x);
 	// ^ and redraw the thing in case it got hit but is still alive
