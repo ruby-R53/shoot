@@ -116,6 +116,10 @@ void ingame(void) {
 					newlvl();
 					// ^ and create it again, on a different
 					// level with new stats
+
+					// and in case this is the final
+					// shot, abort the loop!
+					if (level > levels) break;
 				}
 				// if not, try again!
 				break;
@@ -137,7 +141,7 @@ void ingame(void) {
 		mvspr(player, player.y, player.x);
 
 		// and now it's the enemy's turn!
-		if (enemy.win) enemctrl();
+		enemctrl();
 
 		// what to do whenever the player dies
 		if (player.hp == 0) {

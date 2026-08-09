@@ -1,1 +1,5 @@
+# sanitizer logs
+asan.log.*
+
+# the executable itself
 shoot
