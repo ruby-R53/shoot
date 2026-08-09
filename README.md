@@ -1,7 +1,7 @@
 # Shoot!
 
 This is an attempt at making a vertical shooting game in ncurses. It's in a
-very crude state, and currently there are bugs yet to be fixed.
+very crude state, and currently some more polishing is needed.
 
 ## Story
 
@@ -31,18 +31,19 @@ plus 2, just for an extra challenge.
 
 - By default, you get 12 levels to play. At every 2 levels, or, more precisely,
 at every odd-numbered level, 1 is added to your HP.
+    - You may run `shoot #` to have `#` levels instead!
 
-- Press `Q` to quit at any time!
+- Press `Q` to quit at any time.
 
 ## Building
 
-Just run `make` inside the game's directly. You can then run it with `./shoot`.
+Just run `make` inside the game's directory. You can then run it with `./shoot`.
 
 If you want to however, you may also change `LVL_MAX` in `shoot.h` to change
-which level you want the game to end at. Because it's so crude, nothing will
-really get affected by that. Then, just build it again.
+the default amount of levels. You can launch it with a number argument to set
+that as well, but you do have a choice for a more fixed number.
 
 ## Contributing
 
 Pull requests, issues, anything is welcome. Or rather, _needed_, because I'm
-not too experienced at this and am rusty :)
+not very experienced at this···
