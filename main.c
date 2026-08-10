@@ -148,7 +148,7 @@ void ingame(void) {
 		if (level > levels) break;
 
 		// update the sprite
-		mvspr(player, player.y, player.x);
+		mvspr(player);
 
 		// and now it's the enemy's turn!
 		enemctrl();

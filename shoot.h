@@ -26,7 +26,7 @@ extern uintptr_t level;
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* newspr(SPRITE spr);
-extern void mvspr(SPRITE spr, int y, int x);
+extern void mvspr(SPRITE spr);
 extern int  shoot(SPRITE src, SPRITE dst);
 extern void kill(SPRITE spr);
 extern void health(SPRITE spr);

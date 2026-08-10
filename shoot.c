@@ -45,14 +45,15 @@ WINDOW* newspr(SPRITE spr) {
 }
 
 // move it
-void mvspr(SPRITE spr, int y, int x) {
+void mvspr(SPRITE spr) {
 	werase(spr.win); // first, delete its trail
-	mvderwin(spr.win, y, x); // before it, the sprite, can actually move
+	mvderwin(spr.win, spr.y, spr.x); // before it, the sprite, can actually move
 
 	// now actually show the thing at its specific
 	// coordinates
 	wprintw(spr.win, "%s", spr.skin);
-	wtouchln(game, y, spr.h, 1); // but the parent window must be made aware of that
+	wtouchln(game, spr.y, spr.h, 1);
+	// ^ but the parent window must be made aware of that first
 	wnoutrefresh(game);
 	doupdate(); // then actually update everything
 }
@@ -84,7 +85,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	// depending on who's shooting!
 	do {
 		flip ? ++bullet.y : --bullet.y;
-		mvspr(bullet, bullet.y, bullet.x);
+		mvspr(bullet);
 
 		// if the target (dst) is around, check if the bullet
 		// hit its hitbox (its y position and horizontal center)
@@ -104,7 +105,7 @@ int shoot(SPRITE src, SPRITE dst) {
 
 	werase(bullet.win); // make it disappear!
 	delwin(bullet.win); // let curses know it disappeared!
-	if (dst.hp > 0) mvspr(dst, dst.y, dst.x);
+	if (dst.hp > 0) mvspr(dst);
 	// ^ and redraw the thing in case it got hit but is still alive
 
 	return dst.hp; // and that will be kept track of in `main()`
@@ -285,7 +286,7 @@ void enemctrl(void) {
 	}
 
 	// and finally, update the sprite
-	mvspr(enemy, enemy.y, enemy.x);
+	mvspr(enemy);
 }
 
 // what to do on a new level
@@ -314,7 +315,7 @@ void newlvl(void) {
 		// because of the transition animation,
 		// the screen got cleared, so redraw
 		// the player too
-		mvspr(player, player.y, player.x);
+		mvspr(player);
 	}
 
 	// and finally, update the counter
