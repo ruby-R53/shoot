@@ -131,7 +131,7 @@ void health(SPRITE spr) {
 }
 
 // play a cool little transition between
-// stages and moments
+// levels and moments
 void transition(trans_t transition) {
 	int y = 0, x = 0;
 
@@ -168,7 +168,7 @@ void transition(trans_t transition) {
 		// or fill the screen with dots, clearing
 		// them out one by one later
 		case T_DEBRIS: ;
-			unsigned int tick = 2000 - 1;
+			unsigned int tick = 2000;
 			// 1k iterations (for each) seems reasonable,
 			// it doesn't take very long to happen and it
 			// doesn't fill the screen so much
@@ -182,7 +182,9 @@ void transition(trans_t transition) {
 			srandom(time(NULL));
 
 			// first part, fill
-			while (tick > (1000 - 1)) {
+			while (tick > 1000) {
+				--tick;
+
 				// choose a random spot to fill,
 				// with the walls in mind
 				y = 1 + random() % 48;
@@ -202,12 +204,13 @@ void transition(trans_t transition) {
 				// later
 				backup[0][backpos] = y;
 				backup[1][backpos] = x;
-
-				--tick; // one dot printed, 999 more to go
+				// one dot printed, 999 more to go
 			}
 
 			// second part, unfill
 			while (tick > 0) {
+				--tick;
+
 				// restore the array indexer
 				backpos = (1000-1) - tick;
 
@@ -215,8 +218,7 @@ void transition(trans_t transition) {
 				mvwaddch(game, backup[0][backpos], backup[1][backpos], ' ');
 				wrefresh(game);
 				usleep(500);
-
-				--tick; // one dot removed, 999 more to go
+				// one dot removed, 999 more to go
 			}
 
 			// and finally clear the remaining mess in case
