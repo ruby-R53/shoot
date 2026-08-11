@@ -71,7 +71,7 @@ void ingame(void) {
 	player.win = newspr(player); // player
 	enemy.win  = newspr(enemy); // and opponent
 
-	unsigned char bound[5] = {
+	const unsigned char bound[5] = {
 		player.h, // upper boundary
 		(49 - player.h), // lower boundary
 		(player.w / 2) - (player.w % 2), // leftmost boundary
