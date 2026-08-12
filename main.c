@@ -10,8 +10,7 @@ void ingame(void);
 int main(int argc, char** argv) {
 	// check if we have any argument to
 	// change the amount of levels we want
-	if (argc <= 1) levels = LVL_MAX;
-	else levels = atoi(argv[1]);
+	if (argc > 1) levels = atoi(argv[1]);
 	// otherwise just use the default of 12
 
 	// initiate our screen, but

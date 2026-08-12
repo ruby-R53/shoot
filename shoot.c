@@ -12,9 +12,7 @@ int key = 0;
 
 // and the level information
 uintptr_t level = 1;
-unsigned int levels = 0;
-// ^ gets defined in main() because
-// it depends on `argv`
+unsigned char levels = LVL_MAX;
 
 // create a window with
 // h height,
