@@ -142,7 +142,7 @@ void transition(trans_t transition) {
 		// then erase them column by column
 		case T_CURTAIN: ;
 			const chtype fill[2] = { '.', ' ' };
-			for (; tick <= 1; ++tick) {
+			for (tick = 0; tick <= 1; ++tick) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
 						mvwaddch(game, y, x, fill[tick]);
@@ -164,6 +164,43 @@ void transition(trans_t transition) {
 					wrefresh(game);
 					napms(500); // for .5 seconds
 				}
+			}
+			break;
+
+		// have a bunch of dots do a little square
+		// movement to get erased after
+		case T_DOTSYNC:
+			for (tick = 0; tick <= 1; ++tick) {
+				for (y = 1; y <= 48; y += 2) {
+					for (x = 1+tick; x <= 78; x += 2)
+						mvwaddch(game, y, x, '.');
+				}
+				wrefresh(game);
+				napms(75);
+			}
+			for (tick = 0; tick <= 1; ++tick) {
+				for (y = 2; y <= 48; y += 2) {
+					for (x = 2-tick; x <= 78; x += 2)
+						mvwaddch(game, y, x, '.');
+				}
+				wrefresh(game);
+				napms(75);
+			}
+			for (tick = 0; tick <= 1; ++tick) {
+				for (y = 1; y <= 48; y += 2) {
+					for (x = 1+tick; x <= 78; x += 2)
+						mvwaddch(game, y, x, ' ');
+				}
+				wrefresh(game);
+				napms(75);
+			}
+			for (tick = 0; tick <= 1; ++tick) {
+				for (y = 2; y <= 48; y += 2) {
+					for (x = 2-tick; x <= 78; x += 2)
+						mvwaddch(game, y, x, ' ');
+				}
+				wrefresh(game);
+				napms(75);
 			}
 			break;
 
@@ -429,7 +466,7 @@ void ending(void) {
 // end cleanup
 void endgame(bool aborted) {
 	// gracefully end with a transition
-	transition(T_DEBRIS);
+	transition(T_DOTSYNC);
 
 	// and finish curses now that the player's done
 	delwin(game);

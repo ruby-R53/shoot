@@ -13,6 +13,7 @@ extern WINDOW* game;
 // all we have for now
 typedef enum trans_t {
 	T_CURTAIN,
+	T_DOTSYNC,
 	T_DEBRIS
 } trans_t;
 
