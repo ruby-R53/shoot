@@ -135,13 +135,13 @@ void health(SPRITE spr) {
 // levels and moments
 void transition(trans_t transition) {
 	unsigned int y = 0, x = 0, tick = 0;
+	const chtype fill[2] = { '.', ' ' };
 	// y, x, and a loop count tracker
 
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
 		case T_CURTAIN: ;
-			const chtype fill[2] = { '.', ' ' };
 			for (tick = 0; tick <= 1; ++tick) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
@@ -170,37 +170,23 @@ void transition(trans_t transition) {
 		// have a bunch of dots do a little square
 		// movement to get erased after
 		case T_DOTSYNC:
-			for (tick = 0; tick <= 1; ++tick) {
-				for (y = 1; y <= 48; y += 2) {
-					for (x = 1+tick; x <= 78; x += 2)
-						mvwaddch(game, y, x, '.');
+			for (int stage = 0; stage <= 1; ++stage) {
+				for (tick = 0; tick <= 1; ++tick) {
+					for (y = 1; y <= 48; y += 2) {
+						for (x = 1+tick; x <= 78; x += 2)
+							mvwaddch(game, y, x, fill[stage]);
+					}
+					wrefresh(game);
+					napms(75);
 				}
-				wrefresh(game);
-				napms(75);
-			}
-			for (tick = 0; tick <= 1; ++tick) {
-				for (y = 2; y <= 48; y += 2) {
-					for (x = 2-tick; x <= 78; x += 2)
-						mvwaddch(game, y, x, '.');
+				for (tick = 0; tick <= 1; ++tick) {
+					for (y = 2; y <= 48; y += 2) {
+						for (x = 2-tick; x <= 78; x += 2)
+							mvwaddch(game, y, x, fill[stage]);
+					}
+					wrefresh(game);
+					napms(75);
 				}
-				wrefresh(game);
-				napms(75);
-			}
-			for (tick = 0; tick <= 1; ++tick) {
-				for (y = 1; y <= 48; y += 2) {
-					for (x = 1+tick; x <= 78; x += 2)
-						mvwaddch(game, y, x, ' ');
-				}
-				wrefresh(game);
-				napms(75);
-			}
-			for (tick = 0; tick <= 1; ++tick) {
-				for (y = 2; y <= 48; y += 2) {
-					for (x = 2-tick; x <= 78; x += 2)
-						mvwaddch(game, y, x, ' ');
-				}
-				wrefresh(game);
-				napms(75);
 			}
 			break;
 
@@ -466,7 +452,8 @@ void ending(void) {
 // end cleanup
 void endgame(bool aborted) {
 	// gracefully end with a transition
-	transition(T_DOTSYNC);
+	if (aborted) transition(T_DOTSYNC);
+	else transition(T_DEBRIS);
 
 	// and finish curses now that the player's done
 	delwin(game);
