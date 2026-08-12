@@ -21,7 +21,7 @@ typedef enum trans_t {
 extern int key;
 
 // level tracking
-extern uint8_t levels;
+extern unsigned int levels;
 extern uintptr_t level;
 
 // general engine functions

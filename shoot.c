@@ -12,7 +12,9 @@ int key = 0;
 
 // and the level information
 uintptr_t level = 1;
-uint8_t levels = LVL_MAX;
+unsigned int levels = 0;
+// ^ gets defined in main() because
+// it depends on `argv`
 
 // create a window with
 // h height,
@@ -78,7 +80,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	// check if the enemy is shooting to flip the
 	// bullet's direction (subtract from its position),
 	// otherwise don't do anything
-	int8_t add = (src.win == player.win) ? -1 : 1;
+	int add = (src.win == player.win) ? -1 : 1;
 
 	// now move the bullet up or down,
 	// depending on who's shooting!
@@ -133,15 +135,14 @@ void health(SPRITE spr) {
 // play a cool little transition between
 // levels and moments
 void transition(trans_t transition) {
-	uint16_t y = 0, x = 0, tick = 0;
-	// y, x, and a loop count tracker
+	unsigned int y = 0, x = 0, tick = 0;
 	const chtype fill[2] = { '.', ' ' };
-	// fill character array for transitions
+	// y, x, and a loop count tracker
 
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
-		case T_CURTAIN:
+		case T_CURTAIN: ;
 			for (tick = 0; tick <= 1; ++tick) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
@@ -271,7 +272,7 @@ void enemctrl(void) {
 	 * the boundaries for shooting and
 	 * for going up/down/left/right,
 	 * all respectively */
-	uint8_t bound[5] = {
+	unsigned char bound[5] = {
 		player.y, // for shooting based on the player's position*
 		enemy.h, // upper boundary
 		(49 - enemy.h), // lower boundary
