@@ -78,13 +78,14 @@ int shoot(SPRITE src, SPRITE dst) {
 	bullet.win = newspr(bullet);
 
 	// check if the enemy is shooting to flip the
-	// bullet's direction, otherwise don't do anything
-	bool flip = (src.win == player.win) ? false : true;
+	// bullet's direction (subtract from its position),
+	// otherwise don't do anything
+	int add = (src.win == player.win) ? -1 : 1;
 
 	// now move the bullet up or down,
 	// depending on who's shooting!
 	do {
-		flip ? ++bullet.y : --bullet.y;
+		bullet.y += add;
 		mvspr(bullet);
 
 		// if the target (dst) is around, check if the bullet
@@ -101,7 +102,7 @@ int shoot(SPRITE src, SPRITE dst) {
 
 		napms(5); // and move it every .005 secs
 		flushinp(); // discard any input so that the game doesn't lag
-	} while ((flip ? bullet.y < (49 - src.h) : bullet.y > src.h));
+	} while (bullet.y > 1 && bullet.y < 48);
 
 	werase(bullet.win); // make it disappear!
 	delwin(bullet.win); // let curses know it disappeared!
@@ -452,7 +453,7 @@ void ending(void) {
 // end cleanup
 void endgame(bool aborted) {
 	// gracefully end with a transition
-	if (aborted) transition(T_DOTSYNC);
+	if (aborted || level > levels) transition(T_DOTSYNC);
 	else transition(T_DEBRIS);
 
 	// and finish curses now that the player's done
