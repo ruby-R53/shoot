@@ -2,7 +2,7 @@
 
 typedef struct ART {
 	WINDOW* win;
-	const size_t rows, cols;
+	const char rows, cols;
 	const char** art; // the art itself
 } ART;
 

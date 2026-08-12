@@ -5,9 +5,9 @@
 // a sprite here has a
 typedef struct SPRITE {
 	uintptr_t y, x; // starting and current position
-	const unsigned int h, w; // height & width
-	unsigned int hit[2]; // hitbox (0: y, 1: x)
-	unsigned int hp; // health
+	const unsigned short h, w; // height & width
+	unsigned char hit[2]; // hitbox (0: y, 1: x)
+	unsigned char hp; // health
 	const char* skin; // how it looks like
 	WINDOW* win; // and where it's from
 	WINDOW* hud; // and its own HUD

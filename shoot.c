@@ -80,7 +80,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	// check if the enemy is shooting to flip the
 	// bullet's direction (subtract from its position),
 	// otherwise don't do anything
-	int add = (src.win == player.win) ? -1 : 1;
+	char add = (src.win == player.win) ? -1 : 1;
 
 	// now move the bullet up or down,
 	// depending on who's shooting!
@@ -142,7 +142,7 @@ void transition(trans_t transition) {
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
-		case T_CURTAIN: ;
+		case T_CURTAIN:
 			for (tick = 0; tick <= 1; ++tick) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
@@ -199,8 +199,8 @@ void transition(trans_t transition) {
 			// it doesn't take very long to happen and it
 			// doesn't fill the screen so much
 
-			unsigned int backup[2][1000];
-			unsigned int backpos = 0;
+			unsigned short backup[2][1000];
+			unsigned short backpos = 0;
 			// for smoothing the transition out, these will
 			// store each of y and x's positions
 
