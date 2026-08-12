@@ -134,17 +134,18 @@ void health(SPRITE spr) {
 // play a cool little transition between
 // levels and moments
 void transition(trans_t transition) {
-	int y = 0, x = 0;
+	unsigned int y = 0, x = 0, tick = 0;
+	// y, x, and a loop count tracker
 
 	switch(transition) {
 		// wipe the screen with columnfuls of dots
 		// then erase them column by column
 		case T_CURTAIN: ;
 			const chtype fill[2] = { '.', ' ' };
-			for (int i = 0; i <= 1; ++i) {
+			for (; tick <= 1; ++tick) {
 				for (x = 1; x <= 78; ++x) {
 					for (y = 1; y <= 48; ++y)
-						mvwaddch(game, y, x, fill[i]);
+						mvwaddch(game, y, x, fill[tick]);
 
 					wrefresh(game);
 					// so that it immediately gets
@@ -154,7 +155,7 @@ void transition(trans_t transition) {
 				// stop to show a cool message,
 				// making sure the background
 				// is still all dots
-				if (i == 0) {
+				if (tick == 0) {
 					if (level <= levels)
 						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02ld START!", level);
 					else
@@ -168,8 +169,8 @@ void transition(trans_t transition) {
 
 		// or fill the screen with dots, clearing
 		// them out one by one later
-		case T_DEBRIS: ;
-			unsigned int tick = 2000;
+		case T_DEBRIS:
+			tick = 2000;
 			// 1k iterations (for each) seems reasonable,
 			// it doesn't take very long to happen and it
 			// doesn't fill the screen so much
