@@ -255,16 +255,6 @@ void transition(trans_t transition) {
 
 // the enemy's movements, driven by RNG
 void enemctrl(void) {
-	// one of these must be selected
-	// at random
-	typedef enum MOVE {
-		MV_DOWN,
-		MV_LEFT,
-		MV_RIGHT,
-		MV_SHOOT,
-		MV_UP
-	} move_t;
-
 	/* boundary system that works
 	 * following the above struct:
 	 * the boundaries for shooting and

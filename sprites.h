@@ -17,4 +17,15 @@ typedef struct SPRITE {
 extern SPRITE player;
 extern SPRITE enemy;
 extern SPRITE bullet;
+
+// one of these must be selected
+// at random, currently only the
+// enemy sprite uses this
+typedef enum MOVE {
+	MV_DOWN,
+	MV_LEFT,
+	MV_RIGHT,
+	MV_SHOOT,
+	MV_UP
+} move_t;
 #endif // SPRITES_H
