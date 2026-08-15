@@ -125,7 +125,7 @@ void health(SPRITE spr) {
 		napms(125); // for .125 seconds
 		werase(spr.hud);
 	} else // pad it with zeros, i want it to be higher at a later point
-		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud)-6)/2), "HP: %02d", spr.hp);
+		mvwprintw(spr.hud, 0, ((getmaxx(spr.hud)-6)/2), "HP: %02u", spr.hp);
 
 	wrefresh(spr.hud);
 }
@@ -156,7 +156,7 @@ void transition(trans_t transition) {
 				// is still all dots
 				if (tick == 0) {
 					if (level <= levels)
-						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02d START!", level);
+						mvwprintw(game, 50/2, (80-22)/2, "Battle level %02u START!", level);
 					else
 						mvwprintw(game, 50/2, (80-16)/2, "Congratulations!");
 
@@ -348,7 +348,7 @@ void newlvl(void) {
 // level counter
 void counter(void) {
 	if (level <= levels)
-		mvwprintw(player.hud, 1, 0, "Level: %02d/%02d", level, levels);
+		mvwprintw(player.hud, 1, 0, "Level: %02u/%02u", level, levels);
 	else { // you cleared the game!
 		wclrtoeol(player.hud);
 		mvwprintw(player.hud, 1, 0, " All Clear! ");
@@ -397,7 +397,7 @@ void gameover(void) {
 
 	// and here's the menu itself
 	printart(&over, 16, 0);
-	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02d!", level);
+	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02u!", level);
 	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
@@ -462,7 +462,7 @@ void endgame(bool aborted) {
 	// how useful or cool this is
 	if (!aborted) {
 		if (level <= levels)
-			printf("Quit at level %d··· see you next time!\n", level);
+			printf("Quit at level %u··· see you next time!\n", level);
 		else
 			printf("You won, thank you for playing!\n");
 	}
