@@ -4,7 +4,7 @@
 
 // a sprite here has a
 typedef struct SPRITE {
-	uintptr_t y, x; // starting and current position
+	unsigned short y, x; // starting and current position
 	const unsigned short h, w; // height & width
 	unsigned char hit[2]; // hitbox (0: y, 1: x)
 	unsigned char hp; // health

@@ -28,7 +28,7 @@ extern uintptr_t level;
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* newspr(SPRITE spr);
 extern void mvspr(SPRITE spr);
-extern int  shoot(SPRITE src, SPRITE dst);
+extern unsigned char shoot(SPRITE src, SPRITE dst);
 extern void kill(SPRITE spr);
 extern void health(SPRITE spr);
 extern void transition(trans_t transition);

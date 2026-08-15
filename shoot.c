@@ -59,7 +59,7 @@ void mvspr(SPRITE spr) {
 // what the game is about, we need to specify
 // where we're shooting from and where the
 // opponent is
-int shoot(SPRITE src, SPRITE dst) {
+unsigned char shoot(SPRITE src, SPRITE dst) {
 	// account the hitboxes for their
 	// locations on screen
 	src.hit[0] += src.y;
@@ -107,7 +107,7 @@ int shoot(SPRITE src, SPRITE dst) {
 	if (dst.hp > 0) mvspr(dst);
 	// ^ and redraw the thing in case it got hit but is still alive
 
-	return dst.hp; // and that will be kept track of in `main()`
+	return dst.hp; // and that will be kept track of somewhere
 }
 
 // if someone got killed, make ncurses actually kill them too
@@ -410,7 +410,7 @@ void gameover(void) {
 				player.hp  = 4; // initial HP
 				// the bonus accumulated by the player
 				// up until the very point where they died
-				for (int extra = 0; extra <= level; ++extra)
+				for (int extra = 1; extra <= level; ++extra)
 					player.hp += extra % 2;
 
 				// and finally, restart the level
