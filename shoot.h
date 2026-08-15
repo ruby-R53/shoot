@@ -22,7 +22,7 @@ extern int key;
 
 // level tracking
 extern unsigned char levels;
-extern uintptr_t level;
+extern unsigned char level;
 
 // general engine functions
 extern WINDOW* create_win(int h, int w, int y, int x, bool border);
