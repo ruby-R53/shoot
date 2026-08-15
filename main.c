@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
 	// check if we have any argument to
 	// change the amount of levels we want
 	if (argc > 1) levels = atoi(argv[1]);
+	if (levels == 0) levels = LVL_MAX; // 0 being atoi()'s error return value
 	// otherwise just use the default of 12
 
 	// initiate our screen, but

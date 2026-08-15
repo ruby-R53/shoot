@@ -67,8 +67,8 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 	dst.hit[0] += dst.y;
 	dst.hit[1] += dst.x;
 
-	// use src's hitbox as the base
-	// since it's that tiny
+	// use src's hitbox as the
+	// bullet's origin
 	bullet.y = src.hit[0];
 	bullet.x = src.hit[1];
 
