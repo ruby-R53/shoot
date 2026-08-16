@@ -61,8 +61,6 @@ int main(int argc, char** argv) {
 
 // where the actual game happens
 void ingame(void) {
-	enemy.hp = 6; // higher than the player's but not by much
-
 	// start with a curtain-kind
 	// of transition
 	transition(T_CURTAIN);

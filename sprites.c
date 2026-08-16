@@ -18,7 +18,7 @@ SPRITE player = {
 	.x = 75/2,
 	.hit[0] = 0,
 	.hit[1] = 2,
-	.hp = 4
+	.hp = 4 // sounds reasonable right
 };
 
 SPRITE enemy = {
@@ -28,5 +28,8 @@ SPRITE enemy = {
 	.y = 5,
 	.x = 75/2,
 	.hit[0] = 0,
-	.hit[1] = 2
+	.hit[1] = 2,
+	.hp = 6
+	// ^ higher than the player's but
+	// not by much
 };
