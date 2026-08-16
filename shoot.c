@@ -75,9 +75,9 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 	// spawn the bullet already
 	bullet.win = newspr(bullet);
 
-	// check if the enemy is shooting to flip the
-	// bullet's direction (subtract from its position),
-	// otherwise don't do anything
+	// check if the player is shooting to flip
+	// the bullet's direction (subtract from its
+	// position), otherwise don't do anything
 	char add = (src.win == player.win) ? -1 : 1;
 
 	// now move the bullet up or down,
