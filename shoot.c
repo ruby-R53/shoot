@@ -273,8 +273,10 @@ void enemctrl(void) {
 		 * then that isn't the case with odd-numbered ones */
 	};
 
-	srandom(time(NULL)); // make the moves "truly" random
-	move_t move = random() % 5; // limit them to the 5 ones available
+	// mix the current UNIX time with the previous
+	// keypress for added unpredictability
+	srandom((time(NULL)*key));
+	move_t move = random() % 5; // limit that to the 5 available moves
 	// now handle what our dice showed
 	switch(move) {
 		case MV_SHOOT:
