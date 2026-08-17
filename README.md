@@ -14,10 +14,10 @@ I guess that's it for now.
 
 ## How it works
 
-- ~~The game works in a turn-based fashion. This means, each move you make means
-that the opponent must make one as well. If you don't do anything, both of you
-will remain still, until *you* decide to make a move.~~
-This branch seeks to make the game work like any other: the enemy moves
+- ~~The game works in a turn-based fashion. This means, each move you make means~~
+~~that the opponent must make one as well. If you don't do anything, both of you~~
+~~will remain still, until *you* decide to make a move.~~
+- This branch seeks to make the game work like any other: the enemy moves
 independently from you. There's still a long way to make this more pleasant to
 play, however. But it's something. With that said:
     - The enemy makes a move every .1 seconds. Because of the terminal nature of
@@ -27,11 +27,11 @@ play, however. But it's something. With that said:
 - The center of your sprite, `-=^=-`, is where the bullets get spat out from.
 To shoot them, press the `Z` key. No need to worry about running out of them!
 
-- ~~You may also give your opponent the turn by pressing `X`. This skips your
-turn and makes your opponent do something instead. Useful in case you can't
-reach your opponent, which might happen quite often because of the
-poorly-implemented RNG-based moves :)~~
-This is also unecessary in this branch. Although, like the subitem mentioned,
+- ~~You may also give your opponent the turn by pressing `X`. This skips your~~
+~~turn and makes your opponent do something instead. Useful in case you can't~~
+~~reach your opponent, which might happen quite often because of the~~
+~~poorly-implemented RNG-based moves :)~~
+- This is also unecessary in this branch. Although, like the subitem mentioned,
 you may be able to "fast-forward" the game depending on your keyboard settings.
 In which case, it doesn't matter which key you press.
 
