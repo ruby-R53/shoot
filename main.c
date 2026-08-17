@@ -86,11 +86,9 @@ void ingame(void) {
 
 	// input setup
 	keypad(game, TRUE); // support for arrow keys
-	wtimeout(game, 100);
-	// ^ have the enemy be controlled
-	// automatically by making
-	// wgetch() only blocking for 100
-	// milliseconds
+	nodelay(game, TRUE);
+	// ^ "disable" the delay responsible for
+	// making wgetch() blocking
 
 	// now, the main loop
 	while (level <= levels) {
@@ -160,6 +158,12 @@ void ingame(void) {
 			player.win = NULL;
 			gameover();
 		}
+
+		// reduce lag by discarding all
+		// input done within the
+		flushinp();
+		napms(60);
+		// small time frame of ^^ ms
 	}
 
 	// delete the player's window for
