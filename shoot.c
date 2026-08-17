@@ -276,7 +276,7 @@ void enemctrl(void) {
 	// mix the current UNIX time with the previous
 	// keypress for added unpredictability
 	srandom((time(NULL)*key));
-	move_t move = random() % 5; // limit that to the 5 available moves
+	move_t move = random() % 6; // limit that to the 5 available moves
 	// now handle what our dice showed
 	switch(move) {
 		case MV_SHOOT:
@@ -298,6 +298,8 @@ void enemctrl(void) {
 		case MV_RIGHT:
 			if (enemy.x < bound[4]) ++enemy.x;
 			break;
+
+		default: break;
 	}
 
 	// and finally, update the sprite

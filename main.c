@@ -84,7 +84,14 @@ void ingame(void) {
 	// and the level display
 	counter();
 
+	// input setup
 	keypad(game, TRUE); // support for arrow keys
+	wtimeout(game, 100);
+	// ^ have the enemy be controlled
+	// automatically by making
+	// wgetch() only blocking for 100
+	// milliseconds
+
 	// now, the main loop
 	while (level <= levels) {
 		key = wgetch(game);
@@ -127,26 +134,21 @@ void ingame(void) {
 				// if not, try again!
 				break;
 
-			case 'x': // 'x' to skip your turn!
-				break;
-
 			case 'q': // 'q' exits the game!
 				// now get back to main()
 				return;
 				break;
 
-			default:
-				continue; // do literally nothing whatsoever
-				break;
+			default: break;
 		}
+
+		// update the sprite
+		mvspr(player);
 
 		// if the player has already
 		// finished the game, skip all
 		// of this!
 		if (level > levels) break;
-
-		// update the sprite
-		mvspr(player);
 
 		// and now it's the enemy's turn!
 		enemctrl();
