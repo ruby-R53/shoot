@@ -448,6 +448,30 @@ void ending(void) {
 	wgetch(game); // any key will do, really
 }
 
+// pause screen
+void pausegm(void) {
+	// disable delay so that this screen
+	// doesn't unintentionally get skipped
+	nodelay(game, FALSE);
+
+	// print pause message at the very center
+	// of the screen, in fancy italics
+	wattron(game, A_ITALIC);
+	mvwprintw(game, 50/2, (80-36)/2, "Paused, press any key to continue···");
+	wrefresh(game);
+	wattroff(game, A_ITALIC);
+
+	// wait for input
+	wgetch(game);
+
+	// then redraw everything
+	werase(game);
+	box(game, 0, 0);
+
+	// and restore input state
+	nodelay(game, TRUE);
+}
+
 // end cleanup
 void endgame(bool aborted) {
 	// gracefully end with a transition

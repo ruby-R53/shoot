@@ -132,6 +132,10 @@ void ingame(void) {
 				// if not, try again!
 				break;
 
+			case 'p': // 'p' for pausing!
+				pausegm();
+				break;
+
 			case 'q': // 'q' exits the game!
 				// now get back to main()
 				return;

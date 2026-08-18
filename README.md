@@ -17,12 +17,11 @@ I guess that's it for now.
 - ~~The game works in a turn-based fashion. This means, each move you make means~~
 ~~that the opponent must make one as well. If you don't do anything, both of you~~
 ~~will remain still, until *you* decide to make a move.~~
-- This branch seeks to make the game work like any other: the enemy moves
+- ^ This branch seeks to make the game work like any other: the enemy moves
 independently from you. There's still a long way to make this more pleasant to
 play, however. But it's something. With that said:
-    - The enemy makes a move every .1 seconds. Because of the terminal nature of
-      ncurses however, if you have a keyboard repeat rate that's higher than this,
-      the updates will happen more often to match that.
+    - The enemy makes a move every .06 seconds, and so that's the update rate
+    of the game, meaning you do move every .06 seconds as well.
 
 - The center of your sprite, `-=^=-`, is where the bullets get spat out from.
 To shoot them, press the `Z` key. No need to worry about running out of them!
@@ -31,9 +30,7 @@ To shoot them, press the `Z` key. No need to worry about running out of them!
 ~~turn and makes your opponent do something instead. Useful in case you can't~~
 ~~reach your opponent, which might happen quite often because of the~~
 ~~poorly-implemented RNG-based moves :)~~
-- This is also unecessary in this branch. Although, like the subitem mentioned,
-you may be able to "fast-forward" the game depending on your keyboard settings.
-In which case, it doesn't matter which key you press.
+- ^ This is also unecessary in this branch.
 
 - You start with 4 HP. Your opponent's HP is the result of the current level
 plus 2, just for an extra challenge.
@@ -42,7 +39,11 @@ plus 2, just for an extra challenge.
 at every odd-numbered level, 1 is added to your HP.
     - You may run `shoot #` to have `#` levels instead!
 
-- Press `Q` to quit at any time.
+- You may move both with the arrow keys and the Vim ones (`hjkl`).
+
+- Press `p` to pause the game, and press any key to go back when needed.
+
+- Press `q` to quit at any time.
 
 ## Building
 
@@ -54,5 +55,4 @@ that as well, but you do have a choice for a more fixed number.
 
 ## Contributing
 
-Pull requests, issues, anything is welcome. Or rather, _needed_, because I'm
-not very experienced at this···
+Pull requests, issues, anything is welcome.

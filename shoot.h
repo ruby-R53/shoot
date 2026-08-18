@@ -40,5 +40,6 @@ extern void counter(void);
 extern void titlescr(void);
 extern void gameover(void);
 extern void ending(void);
+extern void pausegm(void);
 extern void endgame(bool aborted);
 #endif // SHOOT_H
