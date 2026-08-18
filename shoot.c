@@ -425,6 +425,11 @@ void gameover(void) {
 
 // when the game is finally beaten
 void ending(void) {
+	flushinp(); // flush residual input just in case
+	nodelay(game, FALSE);
+	// ^ and disable the delay so that the screen
+	// doesn't automatically get skipped
+
 	// a cool variation of the stage clear
 	// transition is played
 	transition(T_CURTAIN);
@@ -439,12 +444,6 @@ void ending(void) {
 	mvwprintw(game, 45, (80-28)/2, "Press any key to continue···");
 	wrefresh(game);
 	wattroff(game, A_ITALIC);
-
-	flushinp();
-	nodelay(game, FALSE);
-	// ^ flush input and disable the delay
-	// so that the screen doesn't automatically
-	// get skipped thanks to previous input
 
 	wgetch(game); // any key will do, really
 }
