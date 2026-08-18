@@ -261,11 +261,11 @@ void enemctrl(void) {
 	 * for going up/down/left/right,
 	 * all respectively */
 	unsigned char bound[5] = {
-		player.y, // for shooting based on the player's position*
 		enemy.h, // upper boundary
 		(49 - enemy.h), // lower boundary
 		(enemy.w / 2) - (enemy.w % 2), // leftmost boundary**
-		(79 - enemy.w) // rightmost boundary
+		(79 - enemy.w), // rightmost boundary
+		player.y // for shooting based on the player's position*
 		/* *do not shoot if the player is out of (vertical) reach!
 		 * **the 2nd part is somewhat required because having an
 		 * even-numbered width makes the 1st's calculation yield
@@ -279,24 +279,24 @@ void enemctrl(void) {
 	move_t move = random() % 6; // limit that to the 5 available moves
 	// now handle what our dice showed
 	switch(move) {
-		case MV_SHOOT:
-			if (enemy.y < bound[0]) player.hp = shoot(enemy, player);
-			break;
-
 		case MV_UP:
-			if (enemy.y > bound[1]) --enemy.y;
+			if (enemy.y > bound[0]) --enemy.y;
 			break;
 
 		case MV_DOWN:
-			if (enemy.y < bound[2]) ++enemy.y;
+			if (enemy.y < bound[1]) ++enemy.y;
 			break;
 
 		case MV_LEFT:
-			if (enemy.x > bound[3]) --enemy.x;
+			if (enemy.x > bound[2]) --enemy.x;
 			break;
 
 		case MV_RIGHT:
-			if (enemy.x < bound[4]) ++enemy.x;
+			if (enemy.x < bound[3]) ++enemy.x;
+			break;
+
+		case MV_SHOOT:
+			if (enemy.y < bound[4]) player.hp = shoot(enemy, player);
 			break;
 
 		default: break;
@@ -425,10 +425,9 @@ void gameover(void) {
 
 // when the game is finally beaten
 void ending(void) {
-	flushinp(); // flush residual input just in case
-	nodelay(game, FALSE);
-	// ^ and disable the delay so that the screen
+	// disable the delay so that the screen
 	// doesn't automatically get skipped
+	nodelay(game, FALSE);
 
 	// a cool variation of the stage clear
 	// transition is played
@@ -445,6 +444,7 @@ void ending(void) {
 	wrefresh(game);
 	wattroff(game, A_ITALIC);
 
+	flushinp(); // flush residual input just in case
 	wgetch(game); // any key will do, really
 }
 

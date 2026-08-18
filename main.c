@@ -166,8 +166,8 @@ void ingame(void) {
 		// reduce lag by discarding all
 		// input done within the
 		flushinp();
-		napms(60);
-		// small time frame of ^^ ms
+		napms(55);
+		// small ^^ ms time frame
 	}
 
 	// delete the player's window for
