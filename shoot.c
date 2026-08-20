@@ -92,7 +92,7 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 			bullet.x == dst.hit[1]) {
 			--dst.hp;
 			health(dst);
-			if (dst.hp == 0) kill(dst);
+			if (dst.hp == 0) kllspr(dst);
 			break;
 			// it makes sense that it disappears after hitting
 			// something before the wall tho'
@@ -111,9 +111,8 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 }
 
 // if someone got killed, make ncurses actually kill them too
-void kill(SPRITE spr) {
+void kllspr(SPRITE spr) {
 	werase(spr.win); // erase the target
-	wrefresh(spr.win);
 	delwin(spr.win); // make curses know the target is dead
 }
 
