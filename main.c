@@ -133,7 +133,12 @@ void ingame(void) {
 				pausegm();
 				break;
 
-			case 'q': // 'q' exits the game!
+			case 'q': // 'q' for exiting!
+				delwin(player.win);
+				delwin(player.hud);
+				delwin(enemy.win);
+				delwin(enemy.hud);
+				// ^ but end all game-related windows first
 				// now get back to main()
 				return;
 				break;
