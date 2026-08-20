@@ -12,7 +12,6 @@ int main(int argc, char** argv) {
 	// change the amount of levels we want
 	if (argc > 1) levels = atoi(argv[1]);
 	if (levels == 0) levels = LVL_MAX; // 0 being atoi()'s error return value
-	// otherwise just use the default of 12
 
 	// initiate our screen, but
 	// run some checks first
@@ -69,6 +68,7 @@ void ingame(void) {
 	player.win = newspr(player); // player
 	enemy.win  = newspr(enemy); // and opponent
 
+	// boundary system for the player sprite
 	const unsigned char bound[5] = {
 		player.h, // upper boundary
 		(49 - player.h), // lower boundary

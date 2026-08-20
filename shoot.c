@@ -392,8 +392,10 @@ void gameover(void) {
 
 	// and here's the menu itself
 	printart(&over, 16, 0);
-	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02u!", level);
-	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
+	wattron(game, A_ITALIC);
+	mvwprintw(game, (50+3)/2, (80-27)/2, "Mission failed at level %02u!", level);
+	wattroff(game, A_ITALIC);
+	mvwprintw(game, (50+7)/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
 	while (player.win == NULL) { // loop it
@@ -407,6 +409,10 @@ void gameover(void) {
 				// up until the very point where they died
 				for (int extra = 1; extra <= level; ++extra)
 					player.hp += extra % 2;
+				/* ^ we also actually do want this to count
+				 * the first level as the player may be quite
+				 * far into the game or just suck if they're
+				 * still at the first one */
 
 				// and finally, restart the level
 				newlvl();
