@@ -22,10 +22,10 @@ extern SPRITE bullet;
 // at random, currently only the
 // enemy sprite uses this
 typedef enum MOVE {
+	MV_UP,
 	MV_DOWN,
 	MV_LEFT,
 	MV_RIGHT,
-	MV_SHOOT,
-	MV_UP
+	MV_SHOOT
 } move_t;
 #endif // SPRITES_H

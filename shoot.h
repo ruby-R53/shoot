@@ -29,7 +29,7 @@ extern WINDOW* create_win(int h, int w, int y, int x, bool border);
 extern WINDOW* newspr(SPRITE spr);
 extern void mvspr(SPRITE spr);
 extern unsigned char shoot(SPRITE src, SPRITE dst);
-extern void kill(SPRITE spr);
+extern void kllspr(SPRITE spr);
 extern void health(SPRITE spr);
 extern void transition(trans_t transition);
 
@@ -40,5 +40,6 @@ extern void counter(void);
 extern void titlescr(void);
 extern void gameover(void);
 extern void ending(void);
+extern void pausegm(void);
 extern void endgame(bool aborted);
 #endif // SHOOT_H

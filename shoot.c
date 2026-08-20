@@ -92,7 +92,7 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 			bullet.x == dst.hit[1]) {
 			--dst.hp;
 			health(dst);
-			if (dst.hp == 0) kill(dst);
+			if (dst.hp == 0) kllspr(dst);
 			break;
 			// it makes sense that it disappears after hitting
 			// something before the wall tho'
@@ -111,9 +111,8 @@ unsigned char shoot(SPRITE src, SPRITE dst) {
 }
 
 // if someone got killed, make ncurses actually kill them too
-void kill(SPRITE spr) {
+void kllspr(SPRITE spr) {
 	werase(spr.win); // erase the target
-	wrefresh(spr.win);
 	delwin(spr.win); // make curses know the target is dead
 }
 
@@ -167,7 +166,8 @@ void transition(trans_t transition) {
 			break;
 
 		// have a bunch of dots do a little square
-		// movement to get erased after
+		// movement to get erased after (awful,
+		// someone please make this look prettier)
 		case T_DOTSYNC:
 			for (int stage = 0; stage <= 1; ++stage) {
 				for (tick = 0; tick <= 1; ++tick) {
@@ -261,11 +261,11 @@ void enemctrl(void) {
 	 * for going up/down/left/right,
 	 * all respectively */
 	unsigned char bound[5] = {
-		player.y, // for shooting based on the player's position*
 		enemy.h, // upper boundary
 		(49 - enemy.h), // lower boundary
 		(enemy.w / 2) - (enemy.w % 2), // leftmost boundary**
-		(79 - enemy.w) // rightmost boundary
+		(79 - enemy.w), // rightmost boundary
+		player.y // for shooting based on the player's position*
 		/* *do not shoot if the player is out of (vertical) reach!
 		 * **the 2nd part is somewhat required because having an
 		 * even-numbered width makes the 1st's calculation yield
@@ -276,28 +276,30 @@ void enemctrl(void) {
 	// mix the current UNIX time with the previous
 	// keypress for added unpredictability
 	srandom((time(NULL)*key));
-	move_t move = random() % 5; // limit that to the 5 available moves
+	move_t move = random() % 6; // limit that to the 5 available moves
 	// now handle what our dice showed
 	switch(move) {
-		case MV_SHOOT:
-			if (enemy.y < bound[0]) player.hp = shoot(enemy, player);
-			break;
-
 		case MV_UP:
-			if (enemy.y > bound[1]) --enemy.y;
+			if (enemy.y > bound[0]) --enemy.y;
 			break;
 
 		case MV_DOWN:
-			if (enemy.y < bound[2]) ++enemy.y;
+			if (enemy.y < bound[1]) ++enemy.y;
 			break;
 
 		case MV_LEFT:
-			if (enemy.x > bound[3]) --enemy.x;
+			if (enemy.x > bound[2]) --enemy.x;
 			break;
 
 		case MV_RIGHT:
-			if (enemy.x < bound[4]) ++enemy.x;
+			if (enemy.x < bound[3]) ++enemy.x;
 			break;
+
+		case MV_SHOOT:
+			if (enemy.y < bound[4]) player.hp = shoot(enemy, player);
+			break;
+
+		default: break;
 	}
 
 	// and finally, update the sprite
@@ -389,11 +391,13 @@ void gameover(void) {
 
 	// and here's the menu itself
 	printart(&over, 16, 0);
-	mvwprintw(game, 54/2, (80-27)/2, "Mission failed at level %02u!", level);
-	mvwprintw(game, 58/2, (80-16)/2, "Try again? [Y/N]");
+	wattron(game, A_ITALIC);
+	mvwprintw(game, (50+3)/2, (80-27)/2, "Mission failed at level %02u!", level);
+	wattroff(game, A_ITALIC);
+	mvwprintw(game, (50+7)/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
-	while (player.win == NULL) { // loop it
+	while (player.hp == 0) { // loop it
 		key = wgetch(game);
 		switch(key) {
 			case 'y':
@@ -404,6 +408,10 @@ void gameover(void) {
 				// up until the very point where they died
 				for (int extra = 1; extra <= level; ++extra)
 					player.hp += extra % 2;
+				/* ^ we also actually do want this to count
+				 * the first level as the player may be quite
+				 * far into the game or just suck if they're
+				 * still at the first one */
 
 				// and finally, restart the level
 				newlvl();
@@ -423,6 +431,10 @@ void gameover(void) {
 
 // when the game is finally beaten
 void ending(void) {
+	// disable the delay so that the screen
+	// doesn't automatically get skipped
+	nodelay(game, FALSE);
+
 	// a cool variation of the stage clear
 	// transition is played
 	transition(T_CURTAIN);
@@ -437,7 +449,33 @@ void ending(void) {
 	mvwprintw(game, 45, (80-28)/2, "Press any key to continue···");
 	wrefresh(game);
 	wattroff(game, A_ITALIC);
+
+	flushinp(); // flush residual input just in case
 	wgetch(game); // any key will do, really
+}
+
+// pause screen
+void pausegm(void) {
+	// disable delay so that this screen
+	// doesn't unintentionally get skipped
+	nodelay(game, FALSE);
+
+	// print pause message at the very center
+	// of the screen, in fancy italics
+	wattron(game, A_ITALIC);
+	mvwprintw(game, 50/2, (80-36)/2, "Paused, press any key to continue···");
+	wrefresh(game);
+	wattroff(game, A_ITALIC);
+
+	// wait for input
+	wgetch(game);
+
+	// then redraw everything
+	werase(game);
+	box(game, 0, 0);
+
+	// and restore input state
+	nodelay(game, TRUE);
 }
 
 // end cleanup

@@ -12,7 +12,6 @@ int main(int argc, char** argv) {
 	// change the amount of levels we want
 	if (argc > 1) levels = atoi(argv[1]);
 	if (levels == 0) levels = LVL_MAX; // 0 being atoi()'s error return value
-	// otherwise just use the default of 12
 
 	// initiate our screen, but
 	// run some checks first
@@ -69,6 +68,7 @@ void ingame(void) {
 	player.win = newspr(player); // player
 	enemy.win  = newspr(enemy); // and opponent
 
+	// boundary system for the player sprite
 	const unsigned char bound[5] = {
 		player.h, // upper boundary
 		(49 - player.h), // lower boundary
@@ -84,7 +84,12 @@ void ingame(void) {
 	// and the level display
 	counter();
 
+	// input setup
 	keypad(game, TRUE); // support for arrow keys
+	nodelay(game, TRUE);
+	// ^ "disable" the delay responsible for
+	// making wgetch() blocking
+
 	// now, the main loop
 	while (level <= levels) {
 		key = wgetch(game);
@@ -118,35 +123,36 @@ void ingame(void) {
 
 				// if we killed our opponent···
 				if (enemy.hp == 0) {
-					enemy.win = NULL; // end the sprite
-					++level;
-					newlvl();
-					// ^ and create it again, on a different
-					// level with new stats
+					++level; // go to the next level
+					newlvl(); // and render it
 				}
 				// if not, try again!
 				break;
 
-			case 'x': // 'x' to skip your turn!
+			case 'p': // 'p' for pausing!
+				pausegm();
 				break;
 
-			case 'q': // 'q' exits the game!
+			case 'q': // 'q' for exiting!
+				delwin(player.win);
+				delwin(player.hud);
+				delwin(enemy.win);
+				delwin(enemy.hud);
+				// ^ but end all game-related windows first
 				// now get back to main()
 				return;
 				break;
 
-			default:
-				continue; // do literally nothing whatsoever
-				break;
+			default: break;
 		}
+
+		// update the sprite
+		mvspr(player);
 
 		// if the player has already
 		// finished the game, skip all
 		// of this!
 		if (level > levels) break;
-
-		// update the sprite
-		mvspr(player);
 
 		// and now it's the enemy's turn!
 		enemctrl();
@@ -154,10 +160,13 @@ void ingame(void) {
 		// what to do whenever the player dies:
 		// NULL their sprite's window,
 		// and go to a nice little menu
-		if (player.hp == 0) {
-			player.win = NULL;
-			gameover();
-		}
+		if (player.hp == 0) gameover();
+
+		// reduce lag by discarding all
+		// input done within the
+		flushinp();
+		napms(50);
+		// small ^^ ms time frame
 	}
 
 	// delete the player's window for
