@@ -167,7 +167,8 @@ void transition(trans_t transition) {
 			break;
 
 		// have a bunch of dots do a little square
-		// movement to get erased after
+		// movement to get erased after (awful,
+		// someone please make this look prettier)
 		case T_DOTSYNC:
 			for (int stage = 0; stage <= 1; ++stage) {
 				for (tick = 0; tick <= 1; ++tick) {

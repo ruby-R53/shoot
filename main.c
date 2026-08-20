@@ -166,7 +166,7 @@ void ingame(void) {
 		// reduce lag by discarding all
 		// input done within the
 		flushinp();
-		napms(55);
+		napms(50);
 		// small ^^ ms time frame
 	}
 
