@@ -1,7 +1,7 @@
 # Shoot!
 
-This is an attempt at making a vertical shooting game in ncurses. It's in a
-very crude state, and currently some more polishing is needed.
+This is an attempt at making a vertical shooter game in ncurses. It's currently
+in a very crude state, and so some more polishing is needed.
 
 ## Story
 
@@ -14,44 +14,44 @@ I guess that's it for now.
 
 ## How it works
 
-- ~~The game works in a turn-based fashion. This means, each move you make means~~
-~~that the opponent must make one as well. If you don't do anything, both of you~~
-~~will remain still, until *you* decide to make a move.~~
-- ^ This branch seeks to make the game work like any other: the enemy moves
-independently from you. There's still a long way to make this more pleasant to
-play, however. But it's something. With that said:
-    - The enemy makes a move every .06 seconds, and so that's the update rate
-    of the game, meaning you do move every .06 seconds as well.
+- Use the arrow keys to move. Additionally, you may use Vim keys (`hjkl`) to
+move as well.
 
-- The center of your sprite, `-=^=-`, is where the bullets get spat out from.
-To shoot them, press the `Z` key. No need to worry about running out of them!
+- By default, you have 12 levels to play. The game gets progressively harder on
+each level by adding 1 more HP to the enemy, which you also do only get one for
+each level.
+  - You may temporarily change the amount of levels by launching `shoot` with a
+  number argument. So `./shoot 6` makes the game only have 6 levels instead.
+  - You may then permanently change the amount of levels in the game by
+  changing the `LVL_MAX` macro in `shoot.h`. It is that easy.
+  - The enemy's moves are picked entirely at random. It doesn't have proper
+  reasoning yet, although it may feel like it at times :)
 
-- ~~You may also give your opponent the turn by pressing `X`. This skips your~~
-~~turn and makes your opponent do something instead. Useful in case you can't~~
-~~reach your opponent, which might happen quite often because of the~~
-~~poorly-implemented RNG-based moves :)~~
-- ^ This is also unecessary in this branch.
+- Both you and the enemy have an infinite amount of bullets. That is, until
+either of you die.
+  - Press `z` to shoot. Each bullet hit only takes 1 HP from the target. There
+  may be new projectiles in the future that take more HP out or buff items for
+  each player, mostly for restoring HP.
 
-- You start with 4 HP. Your opponent's HP is the result of the current level
-plus 2, just for an extra challenge.
+- The game runs at around 20 FPS (an update rate of 50 milliseconds), although
+I may change this later on as I tweak the game further.
+  - It may feel quite slow/sluggish to play on, but this is so that the enemy
+  doesn't move like crazy. I may try a better approach to this in the future.
 
-- By default, you get 12 levels to play. At every 2 levels, or, more precisely,
-at every odd-numbered level, 1 is added to your HP.
-    - You may run `shoot #` to have `#` levels instead!
+- You start with 4 HP. The enemy's HP is calculated by adding 5 to the current
+level. So for level 7, that means the enemy has 12 HP.
+  - However, at every 2 levels, you do get 1 extra HP to keep up with the enemy
+  getting more and more resistant to your attacks.
 
-- You may move both with the arrow keys and the Vim ones (`hjkl`).
+- Press `p` to pause the game. Nothing but a small line of text will appear on
+your screen, and you may press any key to continue.
 
-- Press `p` to pause the game, and press any key to go back when needed.
-
-- Press `q` to quit at any time.
+- Press `q` to quit at any time during the game. Beware that no confirmation
+screen will appear, and your progress isn't saved!
 
 ## Building
 
 Just run `make` inside the game's directory. You can then run it with `./shoot`.
-
-If you want to however, you may also change `LVL_MAX` in `shoot.h` to change
-the default amount of levels. You can launch it with a number argument to set
-that as well, but you do have a choice for a more fixed number.
 
 ## Contributing
 
