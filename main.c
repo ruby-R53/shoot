@@ -123,11 +123,8 @@ void ingame(void) {
 
 				// if we killed our opponent···
 				if (enemy.hp == 0) {
-					enemy.win = NULL; // end the sprite
-					++level;
-					newlvl();
-					// ^ and create it again, on a different
-					// level with new stats
+					++level; // go to the next level
+					newlvl(); // and render it
 				}
 				// if not, try again!
 				break;
@@ -158,10 +155,7 @@ void ingame(void) {
 		// what to do whenever the player dies:
 		// NULL their sprite's window,
 		// and go to a nice little menu
-		if (player.hp == 0) {
-			player.win = NULL;
-			gameover();
-		}
+		if (player.hp == 0) gameover();
 
 		// reduce lag by discarding all
 		// input done within the

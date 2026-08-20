@@ -398,7 +398,7 @@ void gameover(void) {
 	mvwprintw(game, (50+7)/2, (80-16)/2, "Try again? [Y/N]");
 	wrefresh(game);
 
-	while (player.win == NULL) { // loop it
+	while (player.hp == 0) { // loop it
 		key = wgetch(game);
 		switch(key) {
 			case 'y':
