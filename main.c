@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 	raw(); // and don't do any input buffering
 
 	// finally, render where the game itself is shown
-	game = create_win(50, 80, (ymax-50)/2, (xmax-80)/2, true);
+	game = mkwin(50, 80, (ymax-50)/2, (xmax-80)/2, true);
 
 	// tell curses not to perform any extra cursor
 	// movement
@@ -46,8 +46,8 @@ int main(int argc, char** argv) {
 	titlescr();
 
 	// and now the HUDs, just a little below the main window
-	player.hud = create_win(2, 12, (ymax+50)/2, (xmax-12)/2, false);
-	enemy.hud  = create_win(1, 07, (ymax-52)/2, (xmax-07)/2, false);
+	player.hud = mkwin(2, 12, (ymax+50)/2, (xmax-12)/2, false);
+	enemy.hud  = mkwin(1, 07, (ymax-52)/2, (xmax-07)/2, false);
 
 	// then get to the game itself
 	ingame();

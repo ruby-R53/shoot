@@ -25,7 +25,7 @@ extern unsigned char levels;
 extern unsigned char level;
 
 // general engine functions
-extern WINDOW* create_win(int h, int w, int y, int x, bool border);
+extern WINDOW* mkwin(int h, int w, int y, int x, bool border);
 extern WINDOW* newspr(SPRITE spr);
 extern void mvspr(SPRITE spr);
 extern unsigned char shoot(SPRITE src, SPRITE dst);

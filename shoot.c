@@ -20,7 +20,7 @@ unsigned char levels = LVL_MAX;
 // y location,
 // and x location,
 // with or without a border!
-WINDOW* create_win(int h, int w, int y, int x, bool border) {
+WINDOW* mkwin(int h, int w, int y, int x, bool border) {
 	WINDOW* win;
 	win = newwin(h, w, y, x);
 	if (border) box(win, 0, 0);
@@ -324,6 +324,10 @@ void newlvl(void) {
 		// and +1 the player's HP at
 		// every 2 levels
 		player.hp += level % 2;
+		// (^ the execution of this when dying
+		// in level 1 is intentional, who knows
+		// if the player sucks _that_ much or
+		// if the game feels like being difficult)
 
 		// display both health meters
 		health(enemy);
